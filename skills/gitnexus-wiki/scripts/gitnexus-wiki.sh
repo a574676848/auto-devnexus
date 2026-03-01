@@ -30,6 +30,11 @@ fi
 # 🛑 中文 Prompts 替换引擎
 # ==========================================
 echo -e "${YELLOW}🇨🇳 正在替换 GitNexus 源码中的 prompts 为中文版...${NC}"
+
+# 获取脚本所在目录
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+export SCRIPT_DIR
+
 node -e "
 const fs = require('fs'); const path = require('path'); const { execSync } = require('child_process');
 try {
@@ -50,11 +55,9 @@ try {
         process.exit(0);
     }
 
-    // 读取中文版 prompts（使用脚本实际所在目录）
-    const scriptPath = process.argv[1];
-    const scriptDir = path.dirname(scriptPath);
+    // 读取中文版 prompts（从环境变量获取脚本目录）
+    const scriptDir = process.env.SCRIPT_DIR;
     const zhPromptsPath = path.join(scriptDir, 'prompts-zh.js');
-    console.log('   🔍 脚本路径: ' + scriptPath);
     console.log('   🔍 脚本目录: ' + scriptDir);
     console.log('   🔍 查找文件: ' + zhPromptsPath);
     console.log('   🔍 文件是否存在: ' + fs.existsSync(zhPromptsPath));
