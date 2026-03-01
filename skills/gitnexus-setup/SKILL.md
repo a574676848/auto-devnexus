@@ -80,6 +80,15 @@ gitnexus serve
 5. **错误处理**：对缺失前置条件给出清晰提示
 6. **中文输出**：所有提示和说明使用简体中文
 
+## Skill 文件位置说明
+
+本 Skill 可能位于以下目录之一：
+- `~/.claude/skills/` - Claude Code 技能目录
+- `~/.config/opencode/skills/` - OpenCode 技能目录
+- `~/.cc-switch/skills/` - CC-Switch 技能目录
+
+请根据实际安装位置调整脚本路径。
+
 ## 参考资料
 
 详见 [Reference.md](./Reference.md)
