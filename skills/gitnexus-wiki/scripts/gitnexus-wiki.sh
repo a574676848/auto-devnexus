@@ -50,10 +50,17 @@ try {
         process.exit(0);
     }
 
-    // 读取中文版 prompts（与脚本在同一目录）
-    const zhPromptsPath = path.join(__dirname, 'prompts-zh.js');
+    // 读取中文版 prompts（使用脚本实际所在目录）
+    const scriptPath = process.argv[1];
+    const scriptDir = path.dirname(scriptPath);
+    const zhPromptsPath = path.join(scriptDir, 'prompts-zh.js');
+    console.log('   🔍 脚本路径: ' + scriptPath);
+    console.log('   🔍 脚本目录: ' + scriptDir);
+    console.log('   🔍 查找文件: ' + zhPromptsPath);
+    console.log('   🔍 文件是否存在: ' + fs.existsSync(zhPromptsPath));
     if (!fs.existsSync(zhPromptsPath)) {
         console.log('   ⚠️ 未找到中文版 prompts 文件: ' + zhPromptsPath);
+        console.log('   💡 请确保脚本从正确的目录运行');
         process.exit(0);
     }
 
