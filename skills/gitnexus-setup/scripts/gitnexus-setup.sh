@@ -77,5 +77,9 @@ nohup env PORT=${SERVE_PORT} gitnexus serve --port ${SERVE_PORT} > .gitnexus/ser
 
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}🎉 GitNexus 环境已就绪！${NC}"
-echo -e "🔗 Web UI 访问地址: http://localhost:${SERVE_PORT}"
+echo -e "${GREEN}==========================================${NC}"
+echo -e "🔗 ${YELLOW}Web UI 访问地址:${NC}"
+echo -e "   📍 本地直连 : http://localhost:${SERVE_PORT}"
+echo -e "   🌍 官方云端 : https://gitnexus.vercel.app/?server=http://localhost:${SERVE_PORT}"
+echo -e "💡 提示: 索引正在后台建立。运行 ${GREEN}cat .gitnexus/analyze.log${NC} 查看进度。"
 echo -e "${GREEN}==========================================${NC}\n"
