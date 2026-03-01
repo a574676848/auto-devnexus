@@ -56,8 +56,8 @@ const path = require('path');
 const os = require('os');
 
 const openCodePaths = [
-    path.join(os.homedir(), '.opencode.json'),
-    path.join(os.homedir(), '.config', 'opencode', 'opencode.json')
+    path.join(os.homedir(), '.config.json'),
+    path.join(os.homedir(), '.config', 'opencode', 'config.json')
 ];
 
 let fixed = false;
