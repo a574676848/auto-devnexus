@@ -27,9 +27,9 @@ if [ ! -d ".gitnexus" ]; then
 fi
 
 # ==========================================
-# 🛑 核武器级中文 Prompt 注入引擎
+# 🛑 精准中文 Prompt 注入引擎
 # ==========================================
-echo -e "${YELLOW}🇨🇳 正在执行源码级深度扫描，强行注入【中文输出】指令...${NC}"
+echo -e "${YELLOW}🇨🇳 正在执行源码级深度扫描，精准注入【中文输出】指令...${NC}"
 node -e "
 const fs = require('fs'); const path = require('path'); const { execSync } = require('child_process');
 try {
@@ -65,19 +65,16 @@ try {
                 
                 let patched = false;
                 
-                // 策略 1: 拦截标准 System Role，使用 [\\s\\S]*? 兼容多行
-                code = code.replace(/(role:\\s*['\"\`]system['\"\`]\\s*,\\s*content:\\s*['\"\`])([\\s\\S]*?)(['\"\`])/g, (m, p, c, s) => {
+                // 策略 1: 精准拦截 LLM API 调用中的 system prompt
+                // 只匹配包含 'role' 和 'content' 的对象，且 content 中包含 wiki 相关关键词
+                code = code.replace(/(role:\\s*['\"\`]system['\"\`]\\s*,\\s*content:\\s*['\"\`])([\\s\\S]*?(?:wiki|documentation|architecture)[\\s\\S]*?)(['\"\`])/gi, (m, p, c, s) => {
                     patched = true; return p + c + cnInstruction + s;
                 });
                 
-                // 策略 2: 拦截长字符串模板中的 generate wiki 指令
-                code = code.replace(/(\`)([\\s\\S]*?(?:generate|create|write)[\\s\\S]*?wiki[\\s\\S]*?)(\`)/gi, (m, q, c) => {
+                // 策略 2: 精准拦截包含完整句子的 wiki 生成指令
+                // 只匹配包含完整句子的字符串，避免破坏代码中的变量引用
+                code = code.replace(/([\"\`])([\\s\\S]*?(?:Generate|Create|Write)[\\s\\S]+(?:wiki|documentation|architecture)[\\s\\S]*?)([\"\`])/gi, (m, q, c) => {
                     patched = true; return q + c + cnInstruction + q;
-                });
-
-                // 策略 3: 暴力拦截包含 wiki 的 content 字段
-                code = code.replace(/(content:\\s*[\`\"\'])([\\s\\S]*?wiki[\\s\\S]*?)([\`\"\'])/gi, (m, q1, c, q2) => {
-                    patched = true; return q1 + c + cnInstruction + q2;
                 });
 
                 if (patched) {
@@ -94,9 +91,9 @@ try {
     });
     
     if (totalPatched > 0) {
-        console.log('   ✅ 成功！已将中文指令强行写入 ' + totalPatched + ' 个底层核心文件中。');
+        console.log('   ✅ 成功！已将中文指令精准写入 ' + totalPatched + ' 个文件中。');
     } else {
-        console.log('   ✅ 检查完毕：源码已包含中文指令，无需重复注入。');
+        console.log('   ✅ 检查完毕：源码已包含中文指令或无需注入。');
     }
 } catch(e) {
     console.log('   ❌ 注入过程发生未知错误: ' + e.message);
