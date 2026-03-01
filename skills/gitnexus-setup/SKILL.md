@@ -19,20 +19,24 @@ description: "自动化安装、配置 GitNexus，注入 MCP 配置、挂载 pos
 - "重置 GitNexus 环境"
 - "安装 GitNexus"
 
-## 执行步骤
+## 执行步骤（必须按顺序执行）
 
-### 1. 环境检查
-验证 Git 和 npm 环境，确保当前目录是 Git 仓库：
+### 步骤 1：执行安装脚本
+**必须立即执行以下命令**：
 ```bash
 ./scripts/gitnexus-setup.sh
 ```
 
-### 2. 错误处理
-如果遇到 "Permission denied" 错误，先执行赋权命令：
+### 步骤 2：处理权限错误（如需要）
+如果步骤 1 返回 "Permission denied" 错误，**必须先执行赋权命令**：
 ```bash
 chmod +x ./scripts/gitnexus-setup.sh
 ```
-然后重新执行脚本。
+然后**重新执行步骤 1**。
+
+### 步骤 3：验证执行结果
+- 如果脚本返回成功（exit code 0）：向用户展示"预期输出"中的信息
+- 如果脚本返回错误：根据错误信息提示用户
 
 ## 核心能力
 

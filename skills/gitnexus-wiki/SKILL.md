@@ -18,35 +18,37 @@ description: "使用 GitNexus 调用大语言模型生成项目架构 Wiki。当
 - "生成架构文档"
 - "用 GitNexus 写文档"
 
-## 执行步骤
+## 执行步骤（必须按顺序执行）
 
-### 1. 执行脚本
-直接执行脚本：
+### 步骤 1：执行 Wiki 生成脚本
+**必须立即执行以下命令**：
 ```bash
 ./scripts/gitnexus-wiki.sh
 ```
 
-### 2. 错误处理
-如果遇到 "Permission denied" 错误，先执行赋权命令：
+### 步骤 2：处理权限错误（如需要）
+如果步骤 1 返回 "Permission denied" 错误，**必须先执行赋权命令**：
 ```bash
 chmod +x ./scripts/gitnexus-wiki.sh
 ```
-然后重新执行脚本。
+然后**重新执行步骤 1**。
 
-### 3. 处理返回结果
+### 步骤 3：处理执行结果
+
+根据脚本的返回结果，按以下情况处理：
 
 #### 情况 A：执行成功
-如果脚本成功运行，告诉用户任务已在后台执行，并给出查看进度命令：
+如果脚本返回成功（exit code 0），告诉用户：
 > "Wiki 生成任务已在后台运行，请使用 `tail -f .gitnexus/wiki.log` 查看进度。"
 
-#### 情况 B：缺少配置（包含 `[ACTION_REQUIRED]`）
+#### 情况 B：缺少配置（脚本输出包含 `[ACTION_REQUIRED]`）
 **不要报错结束**。主动询问用户：
 > "我没有在您的本地配置中找到大模型 API Key。请直接发送您的 API Key 给我。如果您使用自定义代理或特定模型，也可以一并告诉我（如：Key + 代理地址 + 模型名），我将为您全局保存并继续生成。"
 
-#### 情况 C：用户提供参数后
-当用户提供 API Key 等信息后，将数据作为环境变量传入并再次执行：
+#### 情况 C：用户提供 API Key 后
+当用户提供 API Key、Base URL、模型名等信息后，**必须执行以下命令**：
 ```bash
-API_KEY="用户Key" BASE_URL="用户URL" MODEL="用户模型" ./scripts/gitnexus-wiki.sh
+API_KEY="用户提供的Key" BASE_URL="用户提供的URL" MODEL="用户提供的模型" ./scripts/gitnexus-wiki.sh
 ```
 
 ## 核心能力
