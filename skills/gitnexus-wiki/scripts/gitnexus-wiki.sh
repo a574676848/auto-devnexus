@@ -26,34 +26,83 @@ if [ ! -d ".gitnexus" ]; then
     exit 1
 fi
 
-echo -e "${YELLOW}🇨🇳 正在检查并为源码注入【强制中文输出】指令...${NC}"
+# ==========================================
+# 🛑 核武器级中文 Prompt 注入引擎
+# ==========================================
+echo -e "${YELLOW}🇨🇳 正在执行源码级深度扫描，强行注入【中文输出】指令...${NC}"
 node -e "
 const fs = require('fs'); const path = require('path'); const { execSync } = require('child_process');
 try {
     const root = execSync('npm root -g').toString().trim();
     const pkgPath = path.join(root, 'gitnexus');
-    if (!fs.existsSync(pkgPath)) process.exit(0);
-    const cnInstruction = ' \\\\nIMPORTANT: You MUST generate the entire wiki, including all headings, explanations, and summaries, strictly in Simplified Chinese (简体中文). Do NOT use English unless for code variables.';
+    
+    if (!fs.existsSync(pkgPath)) {
+        console.log('   ⚠️ 未找到全局 gitnexus 目录，跳过注入。');
+        process.exit(0);
+    }
+
+    // 权限检查
+    try {
+        fs.accessSync(pkgPath, fs.constants.W_OK);
+    } catch (err) {
+        console.log('   ❌ 【权限不足】无法修改 GitNexus 源码。');
+        console.log('   👉 解决方案: 请在终端手动执行一次 sudo chmod -R 777 ' + pkgPath);
+        process.exit(0);
+    }
+
+    const cnInstruction = '\\\\n\\\\nIMPORTANT: You MUST generate the entire wiki, including all headings, explanations, and summaries, strictly in Simplified Chinese (简体中文). Do NOT use English unless for code variables.';
+    let totalPatched = 0;
+
     function patchDir(dir) {
         for (const f of fs.readdirSync(dir)) {
             const fullPath = path.join(dir, f);
-            if (fs.statSync(fullPath).isDirectory()) patchDir(fullPath);
-            else if (fullPath.endsWith('.js')) {
+            if (fs.statSync(fullPath).isDirectory()) {
+                patchDir(fullPath);
+            } else if (fullPath.endsWith('.js')) {
                 let code = fs.readFileSync(fullPath, 'utf8');
+                // 如果已经注入过，则跳过
                 if (code.includes('Simplified Chinese')) continue;
+                
                 let patched = false;
-                code = code.replace(/(['\"\`])([^'\"\`]*?(?:generate|create|write)[^'\"\`]*?wiki[^'\"\`]*?)\1/gi, (m, q, c) => { patched = true; return q + c + cnInstruction + q; });
-                code = code.replace(/(role:\\s*['\"\`]system['\"\`]\\s*,\\s*content:\\s*['\"\`])(.*?)(['\"\`])/g, (m, p, c, s) => { patched = true; return p + c + cnInstruction + s; });
-                if (patched) fs.writeFileSync(fullPath, code, 'utf8');
+                
+                // 策略 1: 拦截标准 System Role，使用 [\\s\\S]*? 兼容多行
+                code = code.replace(/(role:\\s*['\"\`]system['\"\`]\\s*,\\s*content:\\s*['\"\`])([\\s\\S]*?)(['\"\`])/g, (m, p, c, s) => {
+                    patched = true; return p + c + cnInstruction + s;
+                });
+                
+                // 策略 2: 拦截长字符串模板中的 generate wiki 指令
+                code = code.replace(/(\`)([\\s\\S]*?(?:generate|create|write)[\\s\\S]*?wiki[\\s\\S]*?)(\`)/gi, (m, q, c) => {
+                    patched = true; return q + c + cnInstruction + q;
+                });
+
+                // 策略 3: 暴力拦截包含 wiki 的 content 字段
+                code = code.replace(/(content:\\s*[\`\"\'])([\\s\\S]*?wiki[\\s\\S]*?)([\`\"\'])/gi, (m, q1, c, q2) => {
+                    patched = true; return q1 + c + cnInstruction + q2;
+                });
+
+                if (patched) {
+                    fs.writeFileSync(fullPath, code, 'utf8');
+                    totalPatched++;
+                }
             }
         }
     }
+    
     ['dist', 'src', 'bin', 'lib'].forEach(subDir => {
         const targetDir = path.join(pkgPath, subDir);
         if (fs.existsSync(targetDir)) patchDir(targetDir);
     });
-} catch(e) {}
+    
+    if (totalPatched > 0) {
+        console.log('   ✅ 成功！已将中文指令强行写入 ' + totalPatched + ' 个底层核心文件中。');
+    } else {
+        console.log('   ✅ 检查完毕：源码已包含中文指令，无需重复注入。');
+    }
+} catch(e) {
+    console.log('   ❌ 注入过程发生未知错误: ' + e.message);
+}
 "
+# ==========================================
 
 if [ -n "$API_KEY" ] || [ -n "$BASE_URL" ] || [ -n "$MODEL" ]; then
     echo -e "${YELLOW}💾 保存新配置至全局文件...${NC}"
