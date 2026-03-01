@@ -160,4 +160,10 @@ esac
 
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}✅ Wiki 生成任务与环境恢复已全部完成！${NC}"
+echo -e "${GREEN}==========================================${NC}"
+echo -e ""
+echo -e "📚 ${YELLOW}常用命令:${NC}"
+echo -e "   ${GREEN}gitnexus list${NC}        - 查看所有已索引的仓库列表"
+echo -e "   ${GREEN}gitnexus status${NC}       - 查看当前仓库的索引状态"
+echo -e "   ${GREEN}gitnexus wiki --help${NC}  - 查看 Wiki 生成帮助"
 echo -e "${GREEN}==========================================${NC}\n"

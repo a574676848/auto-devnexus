@@ -49,13 +49,19 @@ gitnexus setup
 
 HOOK_DIR=".git/hooks"
 HOOK_FILE="$HOOK_DIR/post-commit"
-echo -e "${YELLOW}🪝 配置后台自动更新钩子 (支持死锁防御与 UI 自动恢复)...${NC}"
+echo -e "${YELLOW}🪝 配置后台自动更新钩子...${NC}"
 mkdir -p "$HOOK_DIR"
+
+# 如果钩子已存在，先删除
+if [ -f "$HOOK_FILE" ]; then
+    rm -f "$HOOK_FILE"
+fi
+
 cat << EOF > "$HOOK_FILE"
 #!/bin/sh
 echo "🔄 [GitNexus] 检测到新提交，准备后台更新知识图谱..."
 
-# 将清场、分析、恢复三个动作包装成一个按顺序执行的后台队列
+# 将清场、分析两个动作包装成一个按顺序执行的后台队列
 nohup sh -c '
     # 1. 强制释放数据库写锁
     pkill -f "gitnexus serve" > /dev/null 2>&1 || true
@@ -64,22 +70,19 @@ nohup sh -c '
     
     # 2. 独占锁生成索引
     npx gitnexus analyze > .gitnexus/analyze.log 2>&1
-    
-    # 3. 释放锁后，自动拉起 Web UI 服务
-    nohup env PORT=${SERVE_PORT} npx gitnexus serve --port ${SERVE_PORT} > .gitnexus/serve.log 2>&1 &
 ' > /dev/null 2>&1 &
 EOF
 chmod +x "$HOOK_FILE"
 echo -e "${GREEN}✅ post-commit 钩子配置完成。${NC}"
 
-echo -e "${YELLOW}🌐 正在后台静默启动 Web UI 服务 (端口: ${SERVE_PORT})...${NC}"
-nohup env PORT=${SERVE_PORT} gitnexus serve --port ${SERVE_PORT} > .gitnexus/serve.log 2>&1 &
-
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}🎉 GitNexus 环境已就绪！${NC}"
 echo -e "${GREEN}==========================================${NC}"
-echo -e "🔗 ${YELLOW}Web UI 访问地址:${NC}"
-echo -e "   📍 本地直连 : http://localhost:${SERVE_PORT}"
-echo -e "   🌍 官方云端 : https://gitnexus.vercel.app/?server=http://localhost:${SERVE_PORT}"
 echo -e "💡 提示: 索引正在后台建立。运行 ${GREEN}cat .gitnexus/analyze.log${NC} 查看进度。"
+echo -e ""
+echo -e "📚 ${YELLOW}常用命令:${NC}"
+echo -e "   ${GREEN}gitnexus list${NC}     - 查看所有已索引的仓库列表"
+echo -e "   ${GREEN}gitnexus status${NC}    - 查看当前仓库的索引状态"
+echo -e "   ${GREEN}gitnexus serve${NC}     - 启动本地 HTTP 服务器，连接 Web UI 查看图谱"
+echo -e "   ${YELLOW}⚠️ 注意: serve 命令会锁定数据库，运行期间无法执行 analyze/wiki${NC}"
 echo -e "${GREEN}==========================================${NC}\n"
