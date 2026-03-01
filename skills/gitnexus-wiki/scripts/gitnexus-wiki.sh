@@ -2,7 +2,7 @@
 
 # ==========================================
 # Script: gitnexus-wiki.sh
-# Description: 同步生成 GitNexus Wiki，支持中文 Prompt 注入及实时终端输出
+# Description: 异步生成 GitNexus Wiki，支持中文 Prompt 注入
 # ==========================================
 
 GREEN='\033[0;32m'
@@ -13,6 +13,7 @@ NC='\033[0m'
 SERVE_PORT=54321
 GITNEXUS_GLOBAL_DIR="$HOME/.gitnexus"
 GITNEXUS_GLOBAL_CONFIG="$GITNEXUS_GLOBAL_DIR/config.json"
+PID_FILE=".gitnexus/wiki.pid"
 
 echo -e "${GREEN}📖 [GitNexus Wiki Skill] 开始生成任务与环境检测...${NC}"
 
@@ -118,52 +119,27 @@ pkill -f "gitnexus wiki" > /dev/null 2>&1 || true
 sleep 1
 
 echo -e "\n${GREEN}==========================================${NC}"
-echo -e "${GREEN}🚀 开始同步生成中文 Wiki，请在此窗口查看实时进度...${NC}"
+echo -e "${GREEN}🚀 开始后台异步生成中文 Wiki...${NC}"
 echo -e "${GREEN}==========================================${NC}\n"
 
-# 1. 同步执行 Wiki 生成
-gitnexus wiki $CMD_ARGS
+# 1. 异步执行 Wiki 生成
+nohup gitnexus wiki $CMD_ARGS > .gitnexus/wiki.log 2>&1 &
+echo $! > "$PID_FILE"
 
-# 2. 生成完毕后，立即在后台恢复 Web UI 服务
-echo -e "\n${YELLOW}🌐 正在后台恢复 Web UI 服务 (端口: ${SERVE_PORT})...${NC}"
-nohup env PORT=${SERVE_PORT} gitnexus serve --port ${SERVE_PORT} > .gitnexus/serve.log 2>&1 &
-sleep 2
-
-# 3. 拼装官方 Web UI 桥接地址
-UI_URL="https://gitnexus.vercel.app/?server=http://localhost:${SERVE_PORT}"
-
-echo -e "${GREEN}🌍 正在自动为您在浏览器中打开 Web UI 及生成的图谱...${NC}"
-
-# 4. 跨平台唤醒浏览器
-OS="$(uname -s)"
-case "${OS}" in
-    Darwin*)
-        # macOS
-        open "${UI_URL}"
-        ;;
-    Linux*)
-        # Linux
-        if command -v xdg-open &> /dev/null; then
-            xdg-open "${UI_URL}"
-        else
-            echo -e "   📍 自动打开失败，请手动访问: ${UI_URL}"
-        fi
-        ;;
-    CYGWIN*|MINGW*|MSYS*)
-        # Windows (Git Bash)
-        start "${UI_URL}"
-        ;;
-    *)
-        echo -e "   📍 请手动访问: ${UI_URL}"
-        ;;
-esac
-
-echo -e "\n${GREEN}==========================================${NC}"
-echo -e "${GREEN}✅ Wiki 生成任务与环境恢复已全部完成！${NC}"
-echo -e "${GREEN}==========================================${NC}"
+echo -e "${GREEN}✅ Wiki 生成任务已在后台启动！${NC}"
+echo -e ""
+echo -e "📁 ${YELLOW}生成位置:${NC}"
+echo -e "   .gitnexus/wiki/index.html"
+echo -e ""
+echo -e "🌐 ${YELLOW}查看方式:${NC}"
+echo -e "   直接在浏览器中打开: ${GREEN}file://$(pwd)/.gitnexus/wiki/index.html${NC}"
+echo -e ""
+echo -e "📊 ${YELLOW}检查进度:${NC}"
+echo -e "   运行以下命令查看 index.html 是否已生成:"
+echo -e "   ${GREEN}ls -lh .gitnexus/wiki/index.html 2>/dev/null || echo 'Wiki 仍在生成中...'${NC}"
 echo -e ""
 echo -e "📚 ${YELLOW}常用命令:${NC}"
 echo -e "   ${GREEN}gitnexus list${NC}        - 查看所有已索引的仓库列表"
 echo -e "   ${GREEN}gitnexus status${NC}       - 查看当前仓库的索引状态"
-echo -e "   ${GREEN}gitnexus wiki --help${NC}  - 查看 Wiki 生成帮助"
+echo -e "   ${GREEN}cat .gitnexus/wiki.log${NC} - 查看 Wiki 生成日志"
 echo -e "${GREEN}==========================================${NC}\n"

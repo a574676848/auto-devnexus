@@ -4,13 +4,17 @@
 
 本 Skill 用于异步调用 GitNexus 为当前代码库生成架构 Wiki。采用官方标准传参规范，拥有智能层级读取机制，支持按需索要 Key/BaseUrl/Model 并实现全局持久化，避免 Token 连点浪费。
 
+**重要提示**：所有输出和交互必须使用中文（简体中文）。
+
 ## 功能特性
 
 - **智能层级读取**：优先读取 `~/.gitnexus/config.json` → OpenCode 配置 → Claude Code 配置
 - **全局持久化**：新配置保存到 `~/.gitnexus/config.json`，后续使用无需重复输入
 - **进程防抖**：杀掉旧的 wiki 进程，避免资源冲突
 - **异步执行**：后台生成文档，不阻塞用户操作
+- **浏览器查看**：生成完成后可直接在浏览器中打开 `.gitnexus/wiki/index.html`
 - **多模型支持**：支持 OpenAI、Anthropic 及兼容接口
+- **中文输出**：所有提示和说明使用简体中文
 
 ## 目录结构
 
@@ -38,7 +42,26 @@ gitnexus-wiki/
 2. **配置保存**：如用户提供新配置，保存到全局配置文件
 3. **环境验证**：检查 GitNexus 是否已安装和初始化
 4. **异步生成**：后台运行 `gitnexus wiki` 命令
-5. **进度监控**：用户可通过日志文件查看生成进度
+5. **浏览器查看**：生成完成后在浏览器中打开 `.gitnexus/wiki/index.html`
+
+## 常用命令
+
+```bash
+# 查看所有已索引的仓库列表
+gitnexus list
+
+# 查看当前仓库的索引状态
+gitnexus status
+
+# 查看 Wiki 生成帮助
+gitnexus wiki --help
+
+# 检查 Wiki 文件是否已生成
+ls -lh .gitnexus/wiki/index.html 2>/dev/null || echo "Wiki 仍在生成中..."
+
+# 查看 Wiki 生成日志
+cat .gitnexus/wiki.log
+```
 
 ## 配置层级
 
@@ -62,9 +85,22 @@ gitnexus-wiki/
 ## 输出示例
 
 ```
-🚀 Wiki 生成任务已后台运行！
-========================================
-🔍 进度命令：tail -f .gitnexus/wiki.log
+✅ Wiki 生成任务已在后台启动！
+
+📁 生成位置:
+   .gitnexus/wiki/index.html
+
+🌐 查看方式:
+   直接在浏览器中打开: file:///path/to/project/.gitnexus/wiki/index.html
+
+📊 检查进度:
+   运行以下命令查看 index.html 是否已生成:
+   ls -lh .gitnexus/wiki/index.html 2>/dev/null || echo 'Wiki 仍在生成中...'
+
+📚 常用命令:
+   gitnexus list        - 查看所有已索引的仓库列表
+   gitnexus status       - 查看当前仓库的索引状态
+   cat .gitnexus/wiki.log - 查看 Wiki 生成日志
 ========================================
 ```
 
