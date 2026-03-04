@@ -28,7 +28,7 @@ def get_issue(issue_key: str):
         "status": fields.get('status', {}).get('name'),
         "assignee": fields.get('assignee', {}).get('displayName') if fields.get('assignee') else "Unassigned",
         "reporter": fields.get('reporter', {}).get('displayName'),
-        "priority": fields.get('priority', {}).get('name'),
+        "priority": fields.get('priority', {}).get('name') if fields.get('priority') else None,
         "issuetype": fields.get('issuetype', {}).get('name'),
         "created": fields.get('created'),
         "updated": fields.get('updated'),
