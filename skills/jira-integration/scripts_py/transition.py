@@ -67,8 +67,11 @@ if __name__ == '__main__':
     parser.add_argument('--list', action='store_true', help="列出当前可用的流转操作")
     parser.add_argument('--id', type=str, help="要执行的 Transition ID")
     parser.add_argument('--fields', type=str, help="流转时需要填写的字段 (JSON)")
+    parser.add_argument('--workdir', type=str, required=True, help="工作目录(用户空间tmp路径)")
     
     args = parser.parse_args()
+    utils.validate_workdir(args.workdir)
+    utils.set_workdir(args.workdir)
     
     if args.list:
         list_transitions(args.issue)

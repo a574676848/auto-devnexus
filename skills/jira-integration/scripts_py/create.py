@@ -47,8 +47,11 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--payload', type=str, help="JSON 字符串 payload")
     group.add_argument('--payload_file', type=str, help="JSON payload 文件")
+    parser.add_argument('--workdir', type=str, required=True, help="工作目录(用户空间tmp路径)")
     
     args = parser.parse_args()
+    utils.validate_workdir(args.workdir)
+    utils.set_workdir(args.workdir)
     final_payload = utils.parse_shared_payload(args)
              
     create_issue(final_payload)

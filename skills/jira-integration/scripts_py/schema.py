@@ -10,7 +10,10 @@ except ImportError:
 
 def get_cache_file_path(project_key: str, issuetype_name: str) -> str:
     safe_type_name = "".join([c if c.isalnum() else "_" for c in issuetype_name])
-    return os.path.expanduser(f'~/.jira_schema_cache_{project_key.upper()}_{safe_type_name}.json')
+    filename = f'.jira_schema_cache_{project_key.upper()}_{safe_type_name}.json'
+    if utils._global_workdir:
+        return os.path.join(utils._global_workdir, filename)
+    return os.path.expanduser(f'~/{filename}')
 
 def load_from_cache(cache_path: str):
     if os.path.exists(cache_path):
@@ -106,6 +109,9 @@ if __name__ == '__main__':
     parser.add_argument('--project', type=str, required=True)
     parser.add_argument('--issuetype', type=str, required=True)
     parser.add_argument('--refresh', action='store_true')
+    parser.add_argument('--workdir', type=str, required=True, help="工作目录(用户空间tmp路径)")
     
     args = parser.parse_args()
+    utils.validate_workdir(args.workdir)
+    utils.set_workdir(args.workdir)
     get_issue_schema(args.project, args.issuetype, args.refresh)

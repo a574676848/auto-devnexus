@@ -8,7 +8,11 @@ except ImportError:
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     import utils
 
-CACHE_FILE_PATH = os.path.expanduser('~/.jira_all_users_dict.json')
+def get_cache_file_path() -> str:
+    filename = '.jira_all_users_dict.json'
+    if utils._global_workdir:
+        return os.path.join(utils._global_workdir, filename)
+    return os.path.expanduser(f'~/{filename}')
 
 def fetch_and_cache_users(keyword: str = "") -> list:
     """ Jira 7.x 搜索用户建议带上 username 关键词 """
@@ -55,6 +59,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="查询 Jira 7.5.2 用户字典")
     parser.add_argument('--keyword', type=str, required=True, help="搜索关键词")
     parser.add_argument('--refresh', action='store_true') # 保留参数兼容性
+    parser.add_argument('--workdir', type=str, required=True, help="工作目录(用户空间tmp路径)")
     
     args = parser.parse_args()
+    utils.validate_workdir(args.workdir)
+    utils.set_workdir(args.workdir)
     search_users_dict(args.keyword, args.refresh)
+    

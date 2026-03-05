@@ -30,6 +30,9 @@ def delete_issue(issue_key: str):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="删除 Jira 工单 (Jira 7.5.2)")
     parser.add_argument('--issue', type=str, required=True, help="工单编号")
+    parser.add_argument('--workdir', type=str, required=True, help="工作目录(用户空间tmp路径)")
     
     args = parser.parse_args()
+    utils.validate_workdir(args.workdir)
+    utils.set_workdir(args.workdir)
     delete_issue(args.issue)

@@ -58,6 +58,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="通过 JQL 搜索工单 (Jira 7.5.2)")
     parser.add_argument('--jql', type=str, required=True, help="标准的 JQL 查询语句")
     parser.add_argument('--max', type=int, default=50, help="最大返回数量 (默认 50)")
+    parser.add_argument('--workdir', type=str, required=True, help="工作目录(用户空间tmp路径)")
     
     args = parser.parse_args()
+    utils.validate_workdir(args.workdir)
+    utils.set_workdir(args.workdir)
     search_issues(args.jql, args.max)

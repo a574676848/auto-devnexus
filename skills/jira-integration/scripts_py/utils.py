@@ -8,10 +8,46 @@ import urllib.parse
 
 # 默认域名不再硬编码，改为 None 或从环境变量读取
 JIRA_DOMAIN = os.environ.get('JIRA_DOMAIN')
-CREDENTIALS_FILE = os.path.expanduser('~/.jira_credentials.json')
+_global_workdir = None
 
 # Jira 7.5.2 使用 rest/api/2
 API_VERSION = "2"
+
+def set_workdir(workdir: str):
+    global _global_workdir
+    _global_workdir = workdir
+
+def get_credentials_file() -> str:
+    """获取凭证文件的保存路径。如果设置了 workdir，则保存在 workdir 目录下。"""
+    if _global_workdir:
+        return os.path.join(_global_workdir, '.jira_credentials.json')
+    return os.path.expanduser('~/.jira_credentials.json')
+
+def validate_workdir(workdir: str):
+    """验证工作目录。"""
+    if not workdir or not workdir.strip():
+        log_to_human("❌ 缺少必填参数: --workdir", "ERROR")
+        log_to_agent({
+            "success": False,
+            "error_type": "MISSING_WORKDIR",
+            "message": "必须提供 --workdir <用户工作空间tmp路径>"
+        })
+        sys.exit(1)
+        
+    workdir = os.path.abspath(workdir)
+    if not os.path.isdir(workdir):
+        try:
+            os.makedirs(workdir, exist_ok=True)
+        except Exception as e:
+            log_to_human(f"无法创建工作目录 '{workdir}': {e}", "ERROR")
+            log_to_agent({
+                "success": False,
+                "error_type": "INVALID_WORKDIR",
+                "message": f"无法创建工作目录 '{workdir}': {e}"
+            })
+            sys.exit(1)
+            
+    return workdir
 
 def log_to_agent(data: dict):
     """
@@ -22,6 +58,7 @@ def log_to_agent(data: dict):
     sys.stdout.reconfigure(encoding='utf-8')
     print(json.dumps(data, ensure_ascii=False, indent=2))
     sys.stdout.flush()
+
 def log_to_human(message: str, msg_type: str = 'INFO'):
     """
     输出人类或错误诊断信息的日志 (Standard Error)
@@ -36,10 +73,12 @@ def get_credentials():
     token = os.environ.get('JIRA_API_TOKEN')
     domain = os.environ.get('JIRA_DOMAIN')
     
+    creds_file = get_credentials_file()
+    
     # 优先使用文件凭证
-    if os.path.exists(CREDENTIALS_FILE):
+    if os.path.exists(creds_file):
         try:
-            with open(CREDENTIALS_FILE, 'r', encoding='utf-8') as f:
+            with open(creds_file, 'r', encoding='utf-8') as f:
                 creds = json.load(f)
                 return (
                     creds.get('user', user), 
@@ -58,7 +97,7 @@ def check_auth():
         log_to_agent({
             "success": False,
             "error_type": "MISSING_CREDENTIALS",
-            "message": "缺少必要的配置信息（账号、Token 或 Jira 域名）。请大模型主动向用户询问这三项信息，随后调用 auth.py 存储。"
+            "message": f"缺少必要的配置信息（账号、Token 或 Jira 域名）。请首先调用 IntegrationPlugin.GetDefaultIntegrationAsync(4) 获取 ProjectManagement 类型的默认集成。如果未配置，再向用户询问这三项信息。最后调用 auth.py 存储到 {get_credentials_file()}。"
         })
         sys.exit(0)
     return user, token, domain
