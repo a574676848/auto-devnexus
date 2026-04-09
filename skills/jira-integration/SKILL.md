@@ -77,6 +77,34 @@ description: 零依赖的 Jira CLI 辅助技能 (基于 Python 3)，专为 Jira 
 - **返回数据**：包含工时摘要（总工时、工单数）和详细工时列表（每条工时记录的时间、评论、日期）
 - **⚠️ 注意**：`--issue` 参数不能与 `--user/--from/--to` 同时使用
 
+#### 意图 6：项目复盘报告生成 (Project Review Report) 🆕
+- **适用场景**：用户要求对某个主工单进行工时、BUG、技术卡点、估时偏差、阶段节奏和管理维度复盘，并输出一份 PPT 风格 Markdown 文档。
+- **强制要求**：
+  1. 必须拉取全量 Jira 数据，不能只看主单。
+  2. 所有脚本和输出必须使用 UTF-8。
+  3. 输出文档命名必须为：`<ISSUE>-项目复盘报告-<日期时间>.md`
+  4. 图表优先，表格辅助；Mermaid 仅使用兼容性更好的 `mindmap / flowchart / pie / journey`。
+- **数据采集工作流**：
+  1. 导出复盘数据包：`python scripts_py/review_export.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>"`
+  2. 收集参考资料：`python scripts_py/review_refs.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--file "<本地文件路径>"] [--url "<文档URL>"]`
+  3. 分析复盘数据：`python scripts_py/review_analyze.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--role "张三=研发"]`
+  4. 生成报告：`python scripts_py/review_render.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>"`
+- **一键入口**：若任务明确是生成复盘报告，优先直接调用：`python scripts_py/review_generate.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--file "<本地文件路径>"] [--url "<文档URL>"] [--role "张三=研发"]`
+- **参考资料策略**：
+  1. 优先读取用户上传的本地文件。
+  2. 其次读取用户提供的文档 URL。
+  3. 再读取 Jira 主工单描述中的链接。
+  4. 如果当前环境是 openclaw，大模型必须主动识别自己具备 browser 能力，并优先尝试使用 openclaw browser 模拟打开 URL 获取正文内容，而不是先放弃。
+  5. 如果 browser 读取失败，再退回普通抓取；若仍解析失败，建议用户上传参考资料原文。
+  5. 若没有参考资料，则只针对 Jira 数据继续分析，并在报告中标注口径限制。
+- **粗估策略**：
+  1. 优先参考资料中的粗估表。
+  2. 若无参考资料粗估，则读取 Jira 主工单自定义字段：`产品预估工时`、`业务net预估工时`、`业务java预估工时`、`前端预估工时`、`QA测试粗估`。
+- **角色映射策略**：
+  1. 优先用户显式传入的角色映射。
+  2. 否则从 Jira 用户信息与自定义字段推断。
+  3. 主工单/子任务优先参考 `责任人`，BUG 单优先参考 `BUG制造者`。
+
 ## 大模型避坑与自愈指南 (LLM Gotchas & Auto-Healing)
 
 ### 0. 记忆库分级读取策略

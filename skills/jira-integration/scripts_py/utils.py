@@ -1,7 +1,9 @@
 import os
+import re
 import sys
 import json
 import base64
+from typing import Any, Optional
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -55,9 +57,48 @@ def log_to_agent(data: dict):
     必须保证 stdout 里没有人类看的啰嗦字符。
     """
     # 设置 UTF-8 编码
-    sys.stdout.reconfigure(encoding='utf-8')
+    _reconfigure_stream(sys.stdout)
     print(json.dumps(data, ensure_ascii=False, indent=2))
     sys.stdout.flush()
+
+def _reconfigure_stream(stream: Any):
+    reconfigure = getattr(stream, 'reconfigure', None)
+    if callable(reconfigure):
+        reconfigure(encoding='utf-8')
+
+def ensure_utf8_stdio():
+    """统一标准输入输出编码为 UTF-8。"""
+    try:
+        _reconfigure_stream(sys.stdout)
+    except Exception:
+        pass
+    try:
+        _reconfigure_stream(sys.stderr)
+    except Exception:
+        pass
+
+def read_json_utf8(file_path: str):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def write_json_utf8(file_path: str, data: dict):
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def write_text_utf8(file_path: str, content: str):
+    with open(file_path, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(content)
+
+def sanitize_filename(value: str) -> str:
+    return re.sub(r'[\\/:*?"<>|]+', '_', value)
+
+def extract_urls(text: str):
+    if not text:
+        return []
+    return sorted(set(re.findall(r'https?://[^\s\]\)>"]+', text)))
+
+def get_work_file_path(workdir: str, filename: str) -> str:
+    return os.path.join(workdir, sanitize_filename(filename))
 
 def log_to_human(message: str, msg_type: str = 'INFO'):
     """
@@ -139,7 +180,7 @@ def parse_shared_payload(args):
              sys.exit(1)
     return final_payload
 
-def api_request(endpoint: str, method: str = 'GET', data: dict = None, params: dict = None) -> dict:
+def api_request(endpoint: str, method: str = 'GET', data: Optional[dict] = None, params: Optional[dict] = None) -> dict:
     """
     零依赖的基础 HTTP 请求封装 (urllib)
     """
