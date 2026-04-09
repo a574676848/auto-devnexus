@@ -91,7 +91,7 @@ def load_role_mapping(role_args: list) -> dict:
     return mapping
 
 
-MANUAL_ARCHITECT_OVERRIDE = {'林超', '黄铃木'}
+MANUAL_ARCHITECT_OVERRIDE = set()
 
 
 def collect_user_candidates(issues: list) -> list:

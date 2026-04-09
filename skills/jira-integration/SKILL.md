@@ -73,7 +73,7 @@ description: 零依赖的 Jira CLI 辅助技能 (基于 Python 3)，专为 Jira 
 - **剧本**：
   - "查看我这周的工时" → `--user "zhangbaogen" --from "2026-03-09" --to "2026-03-13"`
   - "查看 PROJ-123 的所有工时" → `--issue "PROJ-123"`
-  - "查看张三三月份的工作日志" → `--user "zhangsan" --from "2026-03-01" --to "2026-03-31"`
+  - "查看某用户三月份的工作日志" → `--user "someuser" --from "2026-03-01" --to "2026-03-31"`
 - **返回数据**：包含工时摘要（总工时、工单数）和详细工时列表（每条工时记录的时间、评论、日期）
 - **⚠️ 注意**：`--issue` 参数不能与 `--user/--from/--to` 同时使用
 
@@ -87,9 +87,9 @@ description: 零依赖的 Jira CLI 辅助技能 (基于 Python 3)，专为 Jira 
 - **数据采集工作流**：
   1. 导出复盘数据包：`python scripts_py/review_export.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>"`
   2. 收集参考资料：`python scripts_py/review_refs.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--file "<本地文件路径>"] [--url "<文档URL>"]`
-  3. 分析复盘数据：`python scripts_py/review_analyze.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--role "张三=研发"]`
+  3. 分析复盘数据：`python scripts_py/review_analyze.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--role "姓名=角色"]`
   4. 生成报告：`python scripts_py/review_render.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>"`
-- **一键入口**：若任务明确是生成复盘报告，优先直接调用：`python scripts_py/review_generate.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--file "<本地文件路径>"] [--url "<文档URL>"] [--role "张三=研发"]`
+- **一键入口**：若任务明确是生成复盘报告，优先直接调用：`python scripts_py/review_generate.py --issue "<KEY>" --workdir "<用户工作空间 tmp 路径>" [--file "<本地文件路径>"] [--url "<文档URL>"] [--role "姓名=角色"]`
 - **参考资料策略**：
   1. 优先读取用户上传的本地文件。
   2. 其次读取用户提供的文档 URL。

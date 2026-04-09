@@ -86,7 +86,7 @@ python scripts_py/review_export.py --issue "EXEPD-205110" --workdir "<用户工�
 python scripts_py/review_refs.py --issue "EXEPD-205110" --workdir "<用户工作空间 tmp 路径>" --file "D:\docs\需求文档.md"
 
 # 3. 分析并生成复盘报告
-python scripts_py/review_analyze.py --issue "EXEPD-205110" --workdir "<用户工作空间 tmp 路径>" --role "徐兰燕=QA"
+python scripts_py/review_analyze.py --issue "EXEPD-205110" --workdir "<用户工作空间 tmp 路径>" --role "姓名=角色"
 python scripts_py/review_render.py --issue "EXEPD-205110" --workdir "<用户工作空间 tmp 路径>"
 
 # 4. 或直接一键生成
