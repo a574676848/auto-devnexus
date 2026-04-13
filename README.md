@@ -61,6 +61,13 @@ Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL
 - **多层认知记忆**：内置 MEMORY.md 系统，持续学习和进化
 - **安全认证**：支持密码和 API Token 认证
 
+### 🔍 仓库解析 (`repo-parser`)
+
+- **多源解析**：支持 GitHub（公开/私有）和 GitLab/Gitea/内网等私有仓库
+- **智能凭证管理**：三级递进凭证策略（集成插件 → 本地缓存 → 用户手动提供），凭证缓存至 `%USERPROFILE%\.repo-parser\`
+- **分块深度阅读**：自动检测项目类型，过滤无关文件，分卷切分代码输出，防止上下文超载
+- **目录与执行分离**：脚本在技能目录，代码 clone 和输出在执行目录，通过 `--workdir` 参数控制
+
 ---
 
 ## 🚀 快速开始
@@ -128,6 +135,7 @@ python skills/jira-integration/scripts_py/search.py --jql "assignee = currentUse
 | [devnexus-setup](skills/devnexus-setup/) | 自动化安装、配置 devnexus | "初始化 devnexus", "配置 devnexus", "启动 devnexus" |
 | [devnexus-wiki](skills/devnexus-wiki/) | 生成项目架构 Wiki | "生成 Wiki", "创建文档", "写项目文档" |
 | [jira-integration](skills/jira-integration/) | Jira 工单管理集成 | "Jira", "工单", "创建工单", "查询工单", "更新工单" |
+| [repo-parser](skills/repo-parser/) | 仓库源码解析，支持 GitHub 及私有仓库 | "解析仓库", "读取代码", "查看仓库结构" |
 
 ---
 
@@ -161,6 +169,13 @@ auto-devnexus/
 │           ├── transition.py # 工单状态流转
 │           ├── update.py     # 更新工单
 │           └── utils.py      # 工具函数
+│   └── repo-parser/          # 仓库解析 Skill
+│       ├── SKILL.md          # Skill 定义文件
+│       ├── README.md         # Skill 说明文档
+│       └── scripts/
+│           ├── parse_github.py      # GitHub 仓库解析
+│           ├── parse_local_git.py   # 私有仓库解析
+│           └── repo_common.py       # 共用模块（凭证管理、解析逻辑）
 ├── docs/                      # 项目文档
 ├── .github/                   # GitHub 配置
 │   └── workflows/            # CI/CD 工作流

@@ -27,11 +27,15 @@ skills/<skill-name>/
 ├── README.md             # 必须：用户说明文档
 ├── Reference.md          # 可选：技术参考资料
 ├── MEMORY.md             # 可选：记忆系统（如 Jira 集成）
-└── scripts_py/           # 脚本目录
+└── scripts/              # 脚本目录（或 scripts_py/）
     ├── main.py           # 核心执行脚本
     ├── utils.py          # 工具函数
     └── other_modules.py  # 其他模块
 ```
+
+> ⚠️ **技能目录与执行目录分离**：对于需要 clone 或生成文件的 Skill（如 repo-parser），
+> 脚本位于 A 目录（技能目录），执行和输出在 B 目录（用户工作目录）。
+> 脚本应支持 `--workdir` 参数指定目标目录，凭证文件应存储到 `%USERPROFILE%\.<skill-name>\` 而非技能目录内。
 
 ## 文件规范
 
@@ -299,6 +303,7 @@ check_command node
 - [gitnexus-setup](../skills/gitnexus-setup/) - 环境初始化（Bash 脚本）
 - [gitnexus-wiki](../skills/gitnexus-wiki/) - Wiki 生成（Bash 脚本）
 - [jira-integration](../skills/jira-integration/) - Jira 集成（Python 脚本）
+- [repo-parser](../skills/repo-parser/) - 仓库解析（Python 脚本，共用模块 + 凭证管理）
 
 ## 提交检查清单
 

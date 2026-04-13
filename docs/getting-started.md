@@ -88,6 +88,17 @@ AI 助手将：
 2. 执行相应的工单操作
 3. 更新记忆系统以优化后续操作
 
+#### 解析仓库源码
+
+> "帮我解析这个仓库 github.com/user/repo"
+> "读取这个 GitLab 私有仓库的源码 https://gitlab.example.com/group/project"
+
+AI 助手将：
+1. 自动识别仓库类型（GitHub 或私有 Git）
+2. 尝试获取访问凭证（集成配置 → 本地缓存 → 询问用户）
+3. Clone 代码到执行目录并解析结构
+4. 输出目录树和分块代码，供 AI 逐步阅读
+
 ### 方式二：手动执行
 
 #### 初始化 GitNexus
@@ -144,6 +155,19 @@ python skills/jira-integration/scripts_py/search.py --jql "assignee = currentUse
 # 获取工单详情
 python skills/jira-integration/scripts_py/get_issue.py --issue "TEST-123"
 ```
+
+#### 仓库解析
+
+```bash
+# 解析 GitHub 公开/私有仓库
+python skills/repo-parser/scripts/parse_github.py https://github.com/user/repo --workdir "E:\temp\parse-target"
+
+# 解析私有仓库（GitLab、Gitea 等）
+python skills/repo-parser/scripts/parse_local_git.py https://gitlab.example.com/group/project --workdir "E:\temp\parse-target"
+```
+
+> ⚠️ **注意**：脚本位于技能目录（A），但 clone 和输出文件写入 `--workdir` 指定的执行目录（B），两者必须分离。
+> 凭证缓存位于 `%USERPROFILE%\.repo-parser\credential_cache.json`，不会提交到 Git。
 
 ## 故障排除
 
@@ -239,5 +263,6 @@ python skills/jira-integration/scripts_py/auth.py --domain "https://your-jira-do
 
 - 阅读 [GitNexus Setup Skill 文档](../skills/gitnexus-setup/README.md)
 - 阅读 [Jira 集成 Skill 文档](../skills/jira-integration/README.md)
+- 阅读 [仓库解析 Skill 文档](../skills/repo-parser/SKILL.md)
 - 了解 [贡献指南](../CONTRIBUTING.md)
 - 探索 [GitNexus 官方文档](https://github.com/abhigyanpatwari/GitNexus)

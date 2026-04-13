@@ -3,3 +3,7 @@
 # Jira integration
 skills/jira-integration/MEMORY.md
 skills/jira-integration/scripts_py/__pycache__/
+
+# Credential files (may contain sensitive tokens)
+skills/repo-parser/scripts/.credential_cache.json
+.repo-parser/credential_cache.json
