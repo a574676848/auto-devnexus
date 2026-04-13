@@ -1,6 +1,6 @@
 ---
 name: "gitnexus-setup"
-description: "自动化安装、配置 GitNexus，注入 MCP 配置、挂载 post-commit 钩子、启动守护进程。当用户要求初始化、配置或重置 GitNexus 环境时调用。"
+description: "自动化安装、配置 GitNexus，注入 MCP 配置、挂载 post-commit 钩子、启动守护进程。当用户要求初始化、配置或重置 GitNexus 环境时调用。注意：脚本在技能目录下，执行在当前项目目录下。"
 ---
 
 # GitNexus 环境初始化 Skill
@@ -24,9 +24,17 @@ description: "自动化安装、配置 GitNexus，注入 MCP 配置、挂载 pos
 ## 执行步骤（必须按顺序执行）
 
 ### 步骤 1：执行 Skill 脚本
-**⚠️ 重要：作为 Skill，你必须立即执行以下命令来运行脚本**：
+
+**⚠️ 重要**：脚本位于 **技能目录**（SKILL.md 所在目录），但需要在 **执行目录**（当前项目目录）下运行。
+
+首先确定技能目录的绝对路径，然后执行：
+
 ```bash
-./scripts/gitnexus-setup.sh
+# 获取技能目录的绝对路径（根据实际安装位置调整）
+SKILL_DIR="你的技能目录绝对路径"  # 例如 ~/.claude/skills/gitnexus-setup
+
+# 在执行目录（当前项目根目录）下运行脚本，传入 --workdir 确保脚本在正确的目录操作
+"${SKILL_DIR}/scripts/gitnexus-setup.sh" --workdir "$(pwd)"
 ```
 
 **不要询问用户是否执行，直接运行上述命令。**
@@ -34,7 +42,7 @@ description: "自动化安装、配置 GitNexus，注入 MCP 配置、挂载 pos
 ### 步骤 2：处理权限错误（如需要）
 如果步骤 1 返回 "Permission denied" 错误，**必须先执行赋权命令**：
 ```bash
-chmod +x ./scripts/gitnexus-setup.sh
+chmod +x "${SKILL_DIR}/scripts/gitnexus-setup.sh"
 ```
 然后**重新执行步骤 1**。
 
@@ -87,7 +95,25 @@ gitnexus serve
 - `~/.config/opencode/skills/` - OpenCode 技能目录
 - `~/.cc-switch/skills/` - CC-Switch 技能目录
 
-请根据实际安装位置调整脚本路径。
+### ⚠️ 技能目录 vs 执行目录（重要）
+
+**技能目录（A）**：SKILL.md 和脚本所在的目录，即 `$(dirname "$SKILL_FILE")`。
+**执行目录（B）**：当前用户工作目录（即当前 Git 仓库根目录）。
+
+**脚本位于 A 目录，但需要在 B 目录执行。** 执行时必须使用 A 目录的脚本路径：
+
+```bash
+# 1. 先确定脚本的绝对路径（基于技能目录）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"  # A 目录的 scripts 路径
+
+# 2. 在执行目录（B）下运行脚本，传入 --workdir
+"${SCRIPT_DIR}/gitnexus-setup.sh" --workdir "$(pwd)"
+```
+
+如果无法通过 shell 变量解析脚本路径，请根据 Skill 的实际安装位置使用对应的绝对路径：
+- `~/.claude/skills/gitnexus-setup/scripts/gitnexus-setup.sh --workdir "$(pwd)"`
+- `~/.config/opencode/skills/gitnexus-setup/scripts/gitnexus-setup.sh --workdir "$(pwd)"`
+- `~/.cc-switch/skills/gitnexus-setup/scripts/gitnexus-setup.sh --workdir "$(pwd)"`
 
 ## 参考资料
 

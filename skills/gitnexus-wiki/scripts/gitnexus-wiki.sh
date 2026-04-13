@@ -5,6 +5,36 @@
 # Description: 异步生成 GitNexus Wiki，使用中文版 prompts
 # ==========================================
 
+# ==========================================
+# 🛑 处理 --workdir 参数（技能目录与执行目录分离场景）
+# ==========================================
+# 用法: ./gitnexus-wiki.sh [--workdir /path/to/project]
+#   --workdir: 指定项目目录（默认: 当前工作目录）
+# 当 skill 安装在 A 目录但需要在 B 目录执行时使用
+# ==========================================
+WORK_DIR=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --workdir)
+            WORK_DIR="$2"
+            shift 2
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+if [ -n "$WORK_DIR" ]; then
+    if [ ! -d "$WORK_DIR" ]; then
+        echo "❌ 错误: 指定的项目目录不存在: $WORK_DIR"
+        exit 1
+    fi
+    cd "$WORK_DIR" || exit 1
+    echo "📂 已切换到项目目录: $WORK_DIR"
+fi
+# ==========================================
+
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'

@@ -1,6 +1,6 @@
 ---
 name: "gitnexus-wiki"
-description: "使用 GitNexus 调用大语言模型生成项目架构 Wiki。当用户要求生成文档、创建项目 Wiki 或编写架构文档时调用。"
+description: "使用 GitNexus 调用大语言模型生成项目架构 Wiki。当用户要求生成文档、创建项目 Wiki 或编写架构文档时调用。注意：脚本在技能目录下，执行在当前项目目录下。"
 ---
 
 # GitNexus Wiki 生成器 Skill
@@ -49,9 +49,15 @@ ls -lh .gitnexus/wiki/index.html 2>/dev/null && echo "WIKI_EXISTS" || echo "NO_W
 继续执行步骤 2。
 
 ### 步骤 2：执行 Skill 脚本
-**⚠️ 重要：作为 Skill，你必须立即执行以下命令来运行脚本**：
+
+**⚠️ 重要**：脚本位于 **技能目录**（SKILL.md 所在目录），但需要在 **执行目录**（当前项目目录）下运行。
+
+首先确定技能目录的绝对路径，然后执行：
+
 ```bash
-./scripts/gitnexus-wiki.sh
+# 根据实际安装位置设置 SKILL_DIR
+SKILL_DIR="你的技能目录绝对路径"  # 例如 ~/.claude/skills/gitnexus-wiki
+"${SKILL_DIR}/scripts/gitnexus-wiki.sh" --workdir "$(pwd)"
 ```
 
 **不要询问用户是否执行，直接运行上述命令。**
@@ -59,7 +65,7 @@ ls -lh .gitnexus/wiki/index.html 2>/dev/null && echo "WIKI_EXISTS" || echo "NO_W
 ### 步骤 3：处理权限错误（如需要）
 如果步骤 2 返回 "Permission denied" 错误，**必须先执行赋权命令**：
 ```bash
-chmod +x ./scripts/gitnexus-wiki.sh
+chmod +x "${SKILL_DIR}/scripts/gitnexus-wiki.sh"
 ```
 然后**重新执行步骤 2**。
 
@@ -78,7 +84,7 @@ chmod +x ./scripts/gitnexus-wiki.sh
 #### 情况 C：用户提供 API Key 后
 当用户提供 API Key、Base URL、模型名等信息后，**必须执行以下命令**：
 ```bash
-API_KEY="用户提供的Key" BASE_URL="用户提供的URL" MODEL="用户提供的模型" ./scripts/gitnexus-wiki.sh
+API_KEY="用户提供的Key" BASE_URL="用户提供的URL" MODEL="用户提供的模型" "${SKILL_DIR}/scripts/gitnexus-wiki.sh" --workdir "$(pwd)"
 ```
 
 ## 状态检查命令参考
@@ -161,7 +167,25 @@ gitnexus wiki --help
 - `~/.config/opencode/skills/` - OpenCode 技能目录
 - `~/.cc-switch/skills/` - CC-Switch 技能目录
 
-请根据实际安装位置调整脚本路径。
+### ⚠️ 技能目录 vs 执行目录（重要）
+
+**技能目录（A）**：SKILL.md 和脚本所在的目录，即 `$(dirname "$SKILL_FILE")`。
+**执行目录（B）**：当前用户工作目录（即当前 Git 仓库根目录）。
+
+**脚本位于 A 目录，但需要在 B 目录执行。** 执行时必须使用 A 目录的脚本路径：
+
+```bash
+# 1. 先确定技能目录的绝对路径（根据实际安装位置调整）
+SKILL_DIR="你的技能目录绝对路径"  # 例如 ~/.claude/skills/gitnexus-wiki
+
+# 2. 在执行目录（B，即当前项目根目录）下运行脚本，传入 --workdir
+"${SKILL_DIR}/scripts/gitnexus-wiki.sh" --workdir "$(pwd)"
+```
+
+如果无法通过变量解析脚本路径，请根据 Skill 的实际安装位置使用对应的绝对路径：
+- `~/.claude/skills/gitnexus-wiki/scripts/gitnexus-wiki.sh --workdir "$(pwd)"`
+- `~/.config/opencode/skills/gitnexus-wiki/scripts/gitnexus-wiki.sh --workdir "$(pwd)"`
+- `~/.cc-switch/skills/gitnexus-wiki/scripts/gitnexus-wiki.sh --workdir "$(pwd)"`
 
 ## 参考资料
 
