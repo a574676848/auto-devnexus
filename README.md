@@ -15,6 +15,25 @@
 
 ---
 
+## 🪟 Windows 用户一条命令安装 WezTerm
+
+克隆仓库后，在 Windows PowerShell 中进入项目目录执行：
+
+```powershell
+.\scripts\windows\wezterm\install-wezterm.bat
+```
+
+脚本会根据当前登录用户的环境自动安装或跳过安装，并生成：
+
+```text
+%USERPROFILE%\.config\wezterm\wezterm.lua
+%USERPROFILE%\.wezterm_cleanup.bat
+%USERPROFILE%\.wezterm_cleanup.ps1
+%USERPROFILE%\.wezterm_img_handler.ps1
+```
+
+如果 WezTerm 已安装，脚本只会重置配置，不会重复安装。详细说明见 [docs/windows-wezterm.md](docs/windows-wezterm.md)。
+
 ## 📖 简介
 
 Auto-devnexus 是一套专为 Claude Code、OpenCode 等支持 MCP 的 AI 编程助手设计的 Skill 集合。它提供了全自动化的 [devnexus](https://github.com/abhigyanpatwari/devnexus) 部署、管理和调度能力，让你的 AI 助手能够无缝集成代码图谱检索功能。
@@ -68,6 +87,14 @@ Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL
 - **分块深度阅读**：自动检测项目类型，过滤无关文件，分卷切分代码输出，防止上下文超载
 - **目录与执行分离**：脚本在技能目录，代码 clone 和输出在执行目录，通过 `--workdir` 参数控制
 
+### 🪟 Windows WezTerm 自动化脚本
+
+- **一键安装**：自动检测 WezTerm 是否已安装，未安装时优先使用 `winget`，失败后回退 GitHub MSI 静默安装
+- **幂等执行**：重复执行时跳过安装，仅重置用户目录中的 WezTerm 配置与辅助脚本
+- **自动备份**：覆盖 `wezterm.lua` 之前自动备份旧配置，只保留最近 5 份
+- **图片粘贴增强**：提供剪贴板图片落盘脚本，配合 `wezterm.lua` 支持智能粘贴
+- **缓存清理**：自动清理 `%TEMP%\WezTerm_Images` 中超过 1 天的旧图片
+
 ---
 
 ## 🚀 快速开始
@@ -88,6 +115,12 @@ cd auto-devnexus
 
 # 确保脚本可执行
 chmod +x skills/*/scripts/*.sh
+```
+
+Windows 用户如需安装 WezTerm，可直接执行：
+
+```powershell
+.\scripts\windows\wezterm\install-wezterm.bat
 ```
 
 ### 使用
@@ -126,6 +159,23 @@ python skills/jira-integration/scripts_py/auth.py --domain "<Jira域名>" --user
 python skills/jira-integration/scripts_py/search.py --jql "assignee = currentUser() AND status = 'Open'"
 ```
 
+Windows WezTerm 安装：
+
+```powershell
+.\scripts\windows\wezterm\install-wezterm.bat
+```
+
+执行后会自动生成：
+
+```text
+%USERPROFILE%\.config\wezterm\wezterm.lua
+%USERPROFILE%\.wezterm_cleanup.bat
+%USERPROFILE%\.wezterm_cleanup.ps1
+%USERPROFILE%\.wezterm_img_handler.ps1
+```
+
+详细说明见 [docs/windows-wezterm.md](docs/windows-wezterm.md)。
+
 ---
 
 ## 📚 Skill 目录
@@ -137,12 +187,28 @@ python skills/jira-integration/scripts_py/search.py --jql "assignee = currentUse
 | [jira-integration](skills/jira-integration/) | Jira 工单管理集成 | "Jira", "工单", "创建工单", "查询工单", "更新工单" |
 | [repo-parser](skills/repo-parser/) | 仓库源码解析，支持 GitHub 及私有仓库 | "解析仓库", "读取代码", "查看仓库结构" |
 
+## 📦 通用脚本
+
+| 目录 | 描述 |
+|------|------|
+| [scripts/windows/wezterm/](scripts/windows/wezterm/) | Windows 下 WezTerm 的安装、配置重置、图片处理与缓存清理脚本 |
+
 ---
 
 ## 🏗️ 项目结构
 
 ```
 auto-devnexus/
+├── scripts/                   # 通用自动化脚本
+│   └── windows/
+│       └── wezterm/
+│           ├── install-wezterm.bat
+│           ├── install-wezterm.ps1
+│           ├── cleanup-wezterm.bat
+│           ├── cleanup-wezterm.ps1
+│           ├── wezterm-img-handler.ps1
+│           └── templates/
+│               └── wezterm.lua
 ├── skills/                    # Skill 集合目录
 │   ├── devnexus-setup/       # devnexus 环境初始化 Skill
 │   │   ├── SKILL.md          # Skill 定义文件（AI 调用入口）

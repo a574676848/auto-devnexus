@@ -7,6 +7,7 @@
 - [环境准备](#环境准备)
 - [安装](#安装)
 - [基础使用](#基础使用)
+- [Windows WezTerm 脚本](#windows-wezterm-脚本)
 - [故障排除](#故障排除)
 
 ## 环境准备
@@ -18,6 +19,7 @@
 - **Node.js**: >= 16 (仅 GitNexus 相关技能需要)
 - **npm**: >= 8 (仅 GitNexus 相关技能需要)
 - **Python**: >= 3.6 (仅 Jira 集成技能需要)
+- **Windows PowerShell**: 建议 PowerShell 5.1+ 或 PowerShell 7（仅 WezTerm Windows 脚本需要）
 
 ### 验证环境
 
@@ -48,6 +50,12 @@ cd auto-gitnexus
 
 ```bash
 chmod +x skills/*/scripts/*.sh
+```
+
+Windows 本机如需安装 WezTerm，可执行：
+
+```powershell
+.\scripts\windows\wezterm\install-wezterm.bat
 ```
 
 ## 基础使用
@@ -169,6 +177,25 @@ python skills/repo-parser/scripts/parse_local_git.py https://gitlab.example.com/
 > ⚠️ **注意**：脚本位于技能目录（A），但 clone 和输出文件写入 `--workdir` 指定的执行目录（B），两者必须分离。
 > 凭证缓存位于 `%USERPROFILE%\.repo-parser\credential_cache.json`，不会提交到 Git。
 
+### Windows WezTerm 脚本
+
+仓库内置了 Windows 下的 WezTerm 一键安装与配置重置脚本：
+
+```powershell
+.\scripts\windows\wezterm\install-wezterm.bat
+```
+
+该脚本会：
+
+1. 检测 WezTerm 是否已安装。
+2. 已安装时跳过安装，仅重置用户侧配置。
+3. 未安装时优先使用 `winget`，失败后回退到 GitHub Release MSI 安装。
+4. 自动生成 `%USERPROFILE%\.config\wezterm\wezterm.lua`。
+5. 自动生成 `%USERPROFILE%\.wezterm_cleanup.bat`、`%USERPROFILE%\.wezterm_cleanup.ps1`、`%USERPROFILE%\.wezterm_img_handler.ps1`。
+6. 覆盖旧配置前自动备份，并且只保留最近 5 份备份。
+
+详细说明见 [Windows WezTerm 一键安装脚本](./windows-wezterm.md)。
+
 ## 故障排除
 
 ### 权限被拒绝
@@ -179,6 +206,27 @@ python skills/repo-parser/scripts/parse_local_git.py https://gitlab.example.com/
 ```bash
 chmod +x skills/*/scripts/*.sh
 ```
+
+### WezTerm 安装失败
+
+**问题**: Windows 下执行 WezTerm 安装脚本失败
+
+**解决**:
+
+```powershell
+# 手动执行 PowerShell 版本
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows\wezterm\install-wezterm.ps1
+
+# 如需强制重新下载安装
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows\wezterm\install-wezterm.ps1 -ForceDownload
+```
+
+如果仍失败，请检查：
+
+1. 当前系统是否能访问 GitHub Release。
+2. 是否具有 MSI 安装权限。
+3. `winget` 是否可用。
+4. `C:\Program Files\PowerShell\7\pwsh.exe` 是否存在。
 
 ### GitNexus 未安装
 
@@ -264,5 +312,6 @@ python skills/jira-integration/scripts_py/auth.py --domain "https://your-jira-do
 - 阅读 [GitNexus Setup Skill 文档](../skills/gitnexus-setup/README.md)
 - 阅读 [Jira 集成 Skill 文档](../skills/jira-integration/README.md)
 - 阅读 [仓库解析 Skill 文档](../skills/repo-parser/SKILL.md)
+- 阅读 [Windows WezTerm 脚本文档](./windows-wezterm.md)
 - 了解 [贡献指南](../CONTRIBUTING.md)
 - 探索 [GitNexus 官方文档](https://github.com/abhigyanpatwari/GitNexus)
