@@ -14,26 +14,6 @@
 </p>
 
 ---
-
-## 🪟 Windows 用户一条命令安装 WezTerm
-
-克隆仓库后，在 Windows PowerShell 中进入项目目录执行：
-
-```powershell
-.\scripts\windows\wezterm\install-wezterm.bat
-```
-
-脚本会根据当前登录用户的环境自动安装或跳过安装，并生成：
-
-```text
-%USERPROFILE%\.config\wezterm\wezterm.lua
-%USERPROFILE%\.wezterm_cleanup.bat
-%USERPROFILE%\.wezterm_cleanup.ps1
-%USERPROFILE%\.wezterm_img_handler.ps1
-```
-
-如果 WezTerm 已安装，脚本只会重置配置，不会重复安装。详细说明见 [docs/windows-wezterm.md](docs/windows-wezterm.md)。
-
 ## 📖 简介
 
 Auto-devnexus 是一套专为 Claude Code、OpenCode 等支持 MCP 的 AI 编程助手设计的 Skill 集合。它提供了全自动化的 [devnexus](https://github.com/abhigyanpatwari/devnexus) 部署、管理和调度能力，让你的 AI 助手能够无缝集成代码图谱检索功能。
