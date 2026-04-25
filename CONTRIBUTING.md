@@ -86,7 +86,7 @@ auto-gitnexus/
 │   │   ├── Reference.md
 │   │   └── scripts/
 │   │       └── gitnexus-wiki.sh
-│   └── jira-integration/     # Jira 集成 Skill
+│   ├── jira-integration/     # Jira 集成 Skill
 │       ├── SKILL.md          # Skill 定义文件
 │       ├── MEMORY.md         # 多层认知记忆系统
 │       └── scripts_py/       # Python 脚本目录
@@ -99,6 +99,10 @@ auto-gitnexus/
 │           ├── transition.py # 工单状态流转
 │           ├── update.py     # 更新工单
 │           └── utils.py      # 工具函数
+│   └── open-source-docs/     # 开源项目文档建设 Skill
+│       ├── SKILL.md          # Skill 定义文件
+│       ├── README.md         # Skill 说明文档
+│       └── Reference.md      # 文档方法论与检查清单
 ├── docs/                      # 项目文档
 ├── .github/                   # GitHub 配置
 │   └── workflows/            # CI/CD 工作流

@@ -166,6 +166,7 @@ Windows WezTerm 安装：
 | [devnexus-wiki](skills/devnexus-wiki/) | 生成项目架构 Wiki | "生成 Wiki", "创建文档", "写项目文档" |
 | [jira-integration](skills/jira-integration/) | Jira 工单管理集成 | "Jira", "工单", "创建工单", "查询工单", "更新工单" |
 | [repo-parser](skills/repo-parser/) | 仓库源码解析，支持 GitHub 及私有仓库 | "解析仓库", "读取代码", "查看仓库结构" |
+| [open-source-docs](skills/open-source-docs/) | 开源项目文档建设，重构 README、docs、示例说明与命名纠偏 | "重写 README", "整理 docs", "最佳开源项目文档", "中文友好化文档" |
 
 ## 📦 通用脚本
 
@@ -215,13 +216,17 @@ auto-devnexus/
 │           ├── transition.py # 工单状态流转
 │           ├── update.py     # 更新工单
 │           └── utils.py      # 工具函数
-│   └── repo-parser/          # 仓库解析 Skill
+│   ├── repo-parser/          # 仓库解析 Skill
 │       ├── SKILL.md          # Skill 定义文件
 │       ├── README.md         # Skill 说明文档
 │       └── scripts/
 │           ├── parse_github.py      # GitHub 仓库解析
 │           ├── parse_local_git.py   # 私有仓库解析
 │           └── repo_common.py       # 共用模块（凭证管理、解析逻辑）
+│   └── open-source-docs/     # 开源项目文档建设 Skill
+│       ├── SKILL.md          # Skill 定义文件
+│       ├── README.md         # Skill 说明文档
+│       └── Reference.md      # 文档方法论、模板与检查清单
 ├── docs/                      # 项目文档
 ├── .github/                   # GitHub 配置
 │   └── workflows/            # CI/CD 工作流
