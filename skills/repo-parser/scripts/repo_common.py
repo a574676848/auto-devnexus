@@ -311,20 +311,29 @@ def validate_workdir(workdir: str):
 # 核心解析逻辑
 # ============================================================
 
+def _ensure_git_suffix(url: str) -> str:
+    """确保 HTTPS/HTTP 类型的仓库 URL 以 .git 结尾（GitLab 鉴权要求）"""
+    if "://" in url and not url.rstrip("/").endswith(".git"):
+        return url.rstrip("/") + ".git"
+    return url
+
+
 def git_clone_with_retry(repo_url: str, cache_dir: str, token: str = None) -> bool:
     """
     通用 Git Clone 逻辑，支持多方案鉴权尝试：
-    1. 方案 A: 传统的 Basic Auth (oauth2:token@url)
+    1. 方案 A: 传统的 Basic Auth (oauth2:token@url.git)
     2. 方案 B: 现代 Header Auth (http.extraHeader="PRIVATE-TOKEN: <token>")
     """
     if os.path.exists(cache_dir):
         shutil.rmtree(cache_dir)
     os.makedirs(cache_dir, exist_ok=True)
 
+    # 统一确保 .git 后缀（GitLab 对不带后缀的 URL 不接受 oauth2 鉴权）
+    clone_url = _ensure_git_suffix(repo_url)
+
     # --- 尝试方案 A: Basic Auth ---
-    clone_url = repo_url
-    if token and "://" in repo_url:
-        parts = repo_url.split("://", 1)
+    if token and "://" in clone_url:
+        parts = clone_url.split("://", 1)
         if "@" not in parts[1]:
             clone_url = f"{parts[0]}://oauth2:{token}@{parts[1]}"
 
@@ -345,7 +354,7 @@ def git_clone_with_retry(repo_url: str, cache_dir: str, token: str = None) -> bo
         os.makedirs(cache_dir)
         # 注意：PRIVATE-TOKEN 是 GitLab 常用 Header，如果是 GitHub 则通常不需要此步
         header_config = ["-c", f"http.extraHeader=PRIVATE-TOKEN: {token}"]
-        cmd_b = ["git"] + header_config + ["clone", "--depth", "1", repo_url, cache_dir]
+        cmd_b = ["git"] + header_config + ["clone", "--depth", "1", _ensure_git_suffix(repo_url), cache_dir]
         res_b = subprocess.run(cmd_b, capture_output=True, text=True, timeout=120, encoding='utf-8')
         if res_b.returncode == 0:
             return True
