@@ -39,6 +39,20 @@ def get_issue(issue_key: str):
     custom_fields = {k: v for k, v in fields.items() if k.startswith('customfield_')}
     clean_data['custom_fields'] = custom_fields
     
+    # 评论摘要，便于直接查看
+    comments = fields.get('comment', {}).get('comments', []) if isinstance(fields.get('comment'), dict) else []
+    clean_data['comments'] = [
+        {
+            "id": c.get('id'),
+            "author": c.get('author', {}).get('displayName') if c.get('author') else None,
+            "body": c.get('body'),
+            "created": c.get('created'),
+            "updated": c.get('updated')
+        }
+        for c in comments
+    ]
+    clean_data['total_comments'] = len(comments)
+    
     utils.log_to_agent({
         "success": True,
         "issue": clean_data
