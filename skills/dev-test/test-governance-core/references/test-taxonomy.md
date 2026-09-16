@@ -65,7 +65,7 @@ UI 测试不负责验证业务流程正确性——浏览器功能操作（导�
 工具选择：
 
 - 视觉比对优先 Figma API + 像素比对工具（如 Percy、Chromatic、Playwright Visual Comparison）。
-- 轻量手动比对可用 Kimi WebBridge 截图 + 设计稿叠加对比。
+- 轻量手动比对可用 BrowserSkill 截图 + 设计稿叠加对比。
 - 项目已有 Playwright/Cypress 时，复用其截图对比功能。
 
 ## 回归测试

@@ -12,7 +12,7 @@ description: 对任意 Web、桌面或移动项目的产品原型/UI设计稿与
 1. 使用 `test-governance-core` 识别项目 UI 类型和已有视觉比对工具。
 2. 获取设计稿来源：Figma 链接/设计稿文件路径/版本号。
 3. 确认真实页面 URL、账号和访问权限；缺少时**暂停当前流程并主动向用户追问缺失项，等用户补齐后立即继续执行**，不得只输出清单后退出。
-4. **Kimi WebBridge 健康检查**：执行 `~/.kimi-webbridge/bin/kimi-webbridge status`。若未安装、未启动或扩展未连接，按 `references/ui-tooling.md` 中 "Kimi WebBridge 缺失时的引导流程" 协助用户完成安装/启动/连接，**安装动作必须先获得用户明确确认**；用户拒绝安装时按降级方案（复用项目已有 Playwright/Cypress 或只输出手工步骤）继续。
+4. **BrowserSkill 健康检查**：执行 `bsk doctor`。若未安装、daemon 未就绪或扩展未连接，按 `references/ui-tooling.md` 中"BrowserSkill 缺失时的引导流程"协助用户完成 CLI、agent skill 和浏览器扩展安装/连接，**安装动作必须先获得用户明确确认**；用户拒绝安装时按降级方案（复用项目已有 Playwright/Cypress 或只输出手工步骤）继续。
 5. 使用截图工具或视觉比对框架（Percy/Chromatic/Playwright Visual Comparison）获取实际 UI 渲染截图。
 6. 执行比对：布局、色彩、字体、图标、圆角、间距、响应式断点、组件状态（hover/focus/active/disabled/error）。
 7. 记录差异清单：位置偏移、尺寸差异、色差、缺失/多余元素。

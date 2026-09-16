@@ -37,7 +37,7 @@ description: 测试统一入口 skill。识别用户测试意图后路由到对�
 
 ---
 
-### Step 1.5 — Kimi WebBridge 健康检查（仅当本轮涉及浏览器操作时）
+### Step 1.5 — BrowserSkill 健康检查（仅当本轮涉及浏览器操作时）
 
 **触发条件**：路由命中以下任一项时强制执行：
 - `ui-tester`（视觉比对）
@@ -46,28 +46,28 @@ description: 测试统一入口 skill。识别用户测试意图后路由到对�
 
 **开始声明**：
 ```
-[dev-test] ⏳ Step 1.5 检测到浏览器意图，正在校验 Kimi WebBridge...
+[dev-test] ⏳ Step 1.5 检测到浏览器意图，正在校验 BrowserSkill...
 ```
 
 **执行**：
 ```bash
-~/.kimi-webbridge/bin/kimi-webbridge status
+bsk doctor
 ```
 
 **结果路由与声明**：
 
 | 观察到 | 状态声明 | 处理方式 |
 |---|---|---|
-| `running: true` 且 `extension_connected: true` | `[dev-test] ✅ Step 1.5 Kimi WebBridge 健康，继续执行` | 进入 Step 2 |
-| `command not found` / 二进制缺失 | `[dev-test] ⚠️ Step 1.5 Kimi WebBridge 未安装，等待用户确认...` | 主动告知 + 询问是否安装 + 用户确认后执行 `curl -fsSL https://cdn.kimi.com/webbridge/install.sh \| bash` |
-| `running: false` | `[dev-test] ⏳ Step 1.5 守护进程未启动，正在启动...` | 执行 `~/.kimi-webbridge/bin/kimi-webbridge start`（幂等），启动后重新校验并输出结果声明 |
-| `running: true` 且 `extension_connected: false` | `[dev-test] ⚠️ Step 1.5 扩展未连接，等待用户操作...` | 引导用户打开浏览器或到 https://www.kimi.com/features/webbridge（中文：https://www.kimi.com/zh-cn/features/webbridge）安装扩展 |
-| 用户拒绝安装 | `[dev-test] ℹ️ Step 1.5 已跳过 Kimi WebBridge，启用降级方案` | 项目已有 Playwright/Cypress 时复用，否则只生成手工步骤清单，明确告知限制范围 |
-| 更深层故障 | `[dev-test] ❌ Step 1.5 Kimi WebBridge 故障，转交专项排查` | 转交 `kimi-webbridge` skill 的 `references/operations.md` 处理 |
+| `bsk doctor` 返回无 `fail` 且扩展已连接 | `[dev-test] ✅ Step 1.5 BrowserSkill 健康，继续执行` | 进入 Step 2 |
+| `command not found` / `bsk` 不可用 | `[dev-test] ⚠️ Step 1.5 BrowserSkill 未安装，等待用户确认...` | 主动告知 + 询问是否安装 + 用户确认后执行 `irm https://raw.githubusercontent.com/Tencent/BrowserSkill/main/install.ps1 | iex`，再运行 `bsk doctor` |
+| `bsk doctor` 报告 daemon 未运行 | `[dev-test] ⏳ Step 1.5 BrowserSkill 守护进程未启动，正在启动...` | 按 doctor 输出的提示启动或重试 `bsk doctor`，不得猜测进程路径 |
+| `bsk doctor` 报告扩展未连接 | `[dev-test] ⚠️ Step 1.5 浏览器扩展未连接，等待用户操作...` | 引导用户安装 Chrome/Edge 扩展并在扩展弹窗确认连接 |
+| 用户拒绝安装 | `[dev-test] ℹ️ Step 1.5 已跳过 BrowserSkill，启用降级方案` | 项目已有 Playwright/Cypress 时复用，否则只生成手工步骤清单，明确告知限制范围 |
+| 更深层故障 | `[dev-test] ❌ Step 1.5 BrowserSkill 故障，转交专项排查` | 引导用户参考 https://github.com/Tencent/BrowserSkill 的 AGENT_INSTALL.md 和 README.md |
 
 > ⚠️ **安装属于中等风险动作，必须等用户明确确认后才执行**。不得未经同意直接拉取并执行远程脚本。
 
-详细引导流程见 `test-governance-core/references/ui-tooling.md` → "Kimi WebBridge 缺失时的引导流程"。
+详细引导流程见 `test-governance-core/references/ui-tooling.md` → "BrowserSkill 缺失时的引导流程"。
 
 ---
 
