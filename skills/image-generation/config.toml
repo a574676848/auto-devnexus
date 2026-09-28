@@ -1,0 +1,21 @@
+[[providers]]
+name = "sm-wenwen-image"
+protocol = "openai"
+base_url = "http://sm-ai.exeaiagent.com:5600/v1"
+api_key_env = "SM_WENWEN_IMAGE_API_KEY"
+
+[[providers]]
+name = "dashscope-multimodal-image"
+protocol = "dashscope"
+base_url = "https://dashscope.aliyuncs.com/api/v1"
+api_key_env = "DASHSCOPE_IMAGE_API_KEY"
+
+[[models]]
+name = "gpt-image-2"
+id = "gpt-image-2"
+provider = "sm-wenwen-image"
+
+[[models]]
+name = "z-image-turbo"
+id = "z-image-turbo"
+provider = "dashscope-multimodal-image"

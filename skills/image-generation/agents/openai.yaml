@@ -1,0 +1,4 @@
+interface:
+  display_name: "Image Generation"
+  short_description: "独立生成或编辑图片"
+  default_prompt: "使用 image-generation skill 生成或编辑图片，并先验证模型配置。"
