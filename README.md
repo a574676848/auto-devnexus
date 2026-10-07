@@ -1,7 +1,7 @@
 # Auto-Devnexus
 
 <p align="center">
-  <strong>🤖 AI 驱动的 devnexus 自动化 Skill 集合</strong>
+  <strong>🤖 AI 驱动的 Auto-Devnexus 自动化 Skill 集合</strong>
 </p>
 
 <p align="center">
@@ -16,11 +16,11 @@
 ---
 ## 📖 简介
 
-Auto-devnexus 是一套专为 Claude Code、OpenCode 等支持 MCP 的 AI 编程助手设计的 Skill 集合。它提供了全自动化的 [devnexus](https://github.com/abhigyanpatwari/devnexus) 部署、管理和调度能力，让你的 AI 助手能够无缝集成代码图谱检索功能。
+Auto-devnexus 是一套专为 Claude Code、OpenCode 等支持 MCP 的 AI 编程助手设计的 Skill 集合。它提供了全自动化的 [GitNexus](https://github.com/abhigyanpatwari/GitNexus) 部署、管理和调度能力，让你的 AI 助手能够无缝集成代码图谱检索功能。
 
-### 什么是 devnexus？
+### 什么是 GitNexus？
 
-devnexus 是一个强大的代码库分析工具，能够：
+GitNexus 是一个强大的代码库分析工具，能够：
 - 🔍 解析 Git 仓库，生成 AST 与调用图谱
 - 🌐 提供本地 HTTP 图谱微服务
 - 📝 调用 LLM 生成项目架构 Wiki
@@ -34,19 +34,19 @@ Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL
 
 ## ✨ 功能特性
 
-### 🔧 devnexus 环境初始化 (`devnexus-setup`)
+### 🔧 GitNexus 环境初始化 (`gitnexus-setup`)
 
-- **自动全局安装**：检测并安装 npm 包 `devnexus`
-- **异步图谱构建**：后台运行 `devnexus analyze` 生成 AST 索引
+- **自动全局安装**：检测并安装 npm 包 `gitnexus`
+- **异步图谱构建**：后台运行 `gitnexus analyze` 生成 AST 索引
 - **MCP 配置注入**：自动注册图谱检索工具到 AI 助手
 - **自动同步钩子**：挂载 `post-commit` 钩子实现代码提交后自动更新
 - **守护进程管理**：进程防抖（防冲突）、全异步非阻塞执行
 - **定制化高位端口**：使用 `54321` 端口避免冲突
 
-### 📝 devnexus Wiki 生成器 (`devnexus-wiki`)
+### 📝 GitNexus Wiki 生成器 (`gitnexus-wiki`)
 
-- **智能层级读取**：优先读取 `~/.devnexus/config.json` → OpenCode 配置 → Claude Code 配置
-- **全局持久化**：新配置保存到 `~/.devnexus/config.json`，后续使用无需重复输入
+- **智能层级读取**：优先读取 `~/.gitnexus/config.json` → OpenCode 配置 → Claude Code 配置
+- **全局持久化**：新配置保存到 `~/.gitnexus/config.json`，后续使用无需重复输入
 - **进程防抖**：杀掉旧的 wiki 进程，避免资源冲突
 - **异步执行**：后台生成文档，不阻塞用户操作
 - **多模型支持**：支持 OpenAI、Anthropic 及兼容接口
@@ -83,8 +83,8 @@ Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL
 ### 前置要求
 
 - Git >= 2.0
-- Node.js >= 16 (仅 devnexus 相关技能需要)
-- npm >= 8 (仅 devnexus 相关技能需要)
+- Node.js >= 16 (仅 GitNexus 相关技能需要)
+- npm >= 8 (仅 GitNexus 相关技能需要)
 - Python >= 3.6 (仅 Jira 集成技能需要)
 
 ### 安装
@@ -110,11 +110,11 @@ Windows 用户如需安装 WezTerm，可直接执行：
 
 对支持 MCP 的 AI 助手说：
 
-> "初始化 devnexus 环境"
+> "初始化 GitNexus 环境"
 
 或
 
-> "使用 devnexus 帮我生成项目架构 Wiki"
+> "使用 GitNexus 帮我生成项目架构 Wiki"
 
 或
 
@@ -129,11 +129,11 @@ AI 助手将自动识别并执行相应的 Skill。
 #### 方式二：手动执行
 
 ```bash
-# 初始化 devnexus
-./skills/devnexus-setup/scripts/devnexus-setup.sh
+# 初始化 GitNexus
+./skills/gitnexus-setup/scripts/gitnexus-setup.sh
 
 # 生成 Wiki
-./skills/devnexus-wiki/scripts/devnexus-wiki.sh
+./skills/gitnexus-wiki/scripts/gitnexus-wiki.sh
 
 # Jira 集成（Python 脚本）
 python skills/jira-integration/scripts_py/auth.py --domain "<Jira域名>" --user "<账号>" --token "<密码/Token>"
@@ -163,11 +163,15 @@ Windows WezTerm 安装：
 
 | Skill | 描述 | 触发关键词 |
 |-------|------|-----------|
-| [devnexus-setup](skills/devnexus-setup/) | 自动化安装、配置 devnexus | "初始化 devnexus", "配置 devnexus", "启动 devnexus" |
-| [devnexus-wiki](skills/devnexus-wiki/) | 生成项目架构 Wiki | "生成 Wiki", "创建文档", "写项目文档" |
+| [gitnexus-setup](skills/gitnexus-setup/) | 自动化安装、配置 GitNexus | "初始化 GitNexus", "配置 GitNexus", "启动 GitNexus" |
+| [gitnexus-wiki](skills/gitnexus-wiki/) | 生成项目架构 Wiki | "生成 Wiki", "创建文档", "写项目文档" |
+| [codebase-memory-mcp-setup](skills/codebase-memory-mcp-setup/) | 跨平台安装、迁移、配置与维护 Codebase Memory MCP（CBM） | "安装 CBM", "配置 MCP", "CBM 索引", "graph-first", "auto_index" |
 | [jira-integration](skills/jira-integration/) | Jira 工单管理集成 | "Jira", "工单", "创建工单", "查询工单", "更新工单" |
 | [repo-parser](skills/repo-parser/) | 仓库源码解析，支持 GitHub 及私有仓库 | "解析仓库", "读取代码", "查看仓库结构" |
 | [open-source-docs](skills/open-source-docs/) | 开源项目文档建设，重构 README、docs、示例说明与命名纠偏 | "重写 README", "整理 docs", "最佳开源项目文档", "中文友好化文档" |
+| [frontend-ui-ux](skills/frontend-ui-ux/) | 专家级一体化前端与 UI/UX 系统，含全栈架构、高阶微动效、设计系统、Image-to-Code 与品牌全案 | "前端", "UI/UX", "设计系统", "微动效", "Image-to-Code", "品牌" |
+| [image-generation](skills/image-generation/) | 调用配置文件中声明的图像模型生成或编辑图片 | "生成图片", "画图", "编辑图片", "gpt-image-2", "z-image-turbo" |
+| [dev-test](skills/dev-test/) | 测试统一入口：写用例、冒烟、集成/e2e、UI 视觉、bug 回归与增量测试 | "测试", "写用例", "冒烟", "集成测试", "e2e", "bug 回归", "覆盖矩阵" |
 | [web-search](skills/web-search/) | 四路并行 web 搜索（Bing RSS / AnySearch / TinyFish / Tavily），跨源去重与共识排序 | "搜索", "联网", "查资料", "web search", "fact-check", "调研" |
 | [cdp-control](skills/cdp-control/) | 用 Chrome DevTools Protocol 驱动并取证任意 Chromium 内核界面（WebView2 / Tauri / Electron / Chrome / 无头），纯标准库零依赖、跨平台 | "CDP", "真机验证", "桌面端验证", "点击", "输入", "截图取证", "remote-debugging-port", "DevTools 协议" |
 
@@ -194,18 +198,18 @@ auto-devnexus/
 │           └── templates/
 │               └── wezterm.lua
 ├── skills/                    # Skill 集合目录
-│   ├── devnexus-setup/       # devnexus 环境初始化 Skill
+│   ├── gitnexus-setup/       # GitNexus 环境初始化 Skill
 │   │   ├── SKILL.md          # Skill 定义文件（AI 调用入口）
 │   │   ├── README.md         # Skill 说明文档
 │   │   ├── Reference.md      # 参考资料
 │   │   └── scripts/
-│   │       └── devnexus-setup.sh
-│   ├── devnexus-wiki/        # devnexus Wiki 生成器 Skill
+│   │       └── gitnexus-setup.sh
+│   ├── gitnexus-wiki/        # GitNexus Wiki 生成器 Skill
 │   │   ├── SKILL.md
 │   │   ├── README.md
 │   │   ├── Reference.md
 │   │   └── scripts/
-│   │       └── devnexus-wiki.sh
+│   │       └── gitnexus-wiki.sh
 │   └── jira-integration/     # Jira 集成 Skill
 │       ├── SKILL.md          # Skill 定义文件
 │       ├── MEMORY.md         # 多层认知记忆系统
@@ -275,7 +279,7 @@ auto-devnexus/
 
 ## 🙏 致谢
 
-- [devnexus](https://github.com/abhigyanpatwari/devnexus) - 提供强大的代码图谱分析能力
+- [GitNexus](https://github.com/abhigyanpatwari/GitNexus) - 提供强大的代码图谱分析能力
 - [Claude Code](https://github.com/anthropics/claude-code) - AI 编程助手
 - [OpenCode](https://github.com/opencode-ai/opencode) - 开源 AI 编程助手
 
