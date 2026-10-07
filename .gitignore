@@ -10,3 +10,7 @@ skills/repo-parser/scripts/.credential_cache.json
 
 # web-search skill keys
 skills/web-search/.env
+
+# cdp-control skill
+skills/cdp-control/scripts/__pycache__/
+# 本地 Laya 服务地址与令牌写在用户目录（~/.config/cdp-control/laya.json），不入库
