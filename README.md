@@ -169,7 +169,7 @@ Windows WezTerm 安装：
 | [jira-integration](skills/jira-integration/) | Jira 工单管理集成 | "Jira", "工单", "创建工单", "查询工单", "更新工单" |
 | [repo-parser](skills/repo-parser/) | 仓库源码解析，支持 GitHub 及私有仓库 | "解析仓库", "读取代码", "查看仓库结构" |
 | [open-source-docs](skills/open-source-docs/) | 开源项目文档建设，重构 README、docs、示例说明与命名纠偏 | "重写 README", "整理 docs", "最佳开源项目文档", "中文友好化文档" |
-| [frontend-ui-ux](skills/frontend-ui-ux/) | 专家级一体化前端与 UI/UX 系统，含全栈架构、高阶微动效、设计系统、Image-to-Code 与品牌全案 | "前端", "UI/UX", "设计系统", "微动效", "Image-to-Code", "品牌" |
+| [frontend-ui-ux](skills/frontend-ui-ux/) | 专家级一体化前端与 UI/UX 系统，含全栈架构、高阶微动效、视觉 Token 刻度、高转化落地页、设计转动态展演（MP4/GIF）、Image-to-Code 与品牌全案 | "前端", "UI/UX", "设计系统", "微动效", "落地页", "动效展演", "Image-to-Code", "品牌" |
 | [image-generation](skills/image-generation/) | 调用配置文件中声明的图像模型生成或编辑图片 | "生成图片", "画图", "编辑图片", "gpt-image-2", "z-image-turbo" |
 | [dev-test](skills/dev-test/) | 测试统一入口：写用例、冒烟、集成/e2e、UI 视觉、bug 回归与增量测试 | "测试", "写用例", "冒烟", "集成测试", "e2e", "bug 回归", "覆盖矩阵" |
 | [web-search](skills/web-search/) | 四路并行 web 搜索（Bing RSS / AnySearch / TinyFish / Tavily），跨源去重与共识排序 | "搜索", "联网", "查资料", "web search", "fact-check", "调研" |

@@ -1,6 +1,6 @@
 ---
 name: frontend-ui-ux
-description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端架构、Awwwards 级高阶微动效（GSAP & Motion）、企业级设计系统、既有系统审计重构、像素级 Image-to-Code 还原、Web/App 视觉原型分段生图及品牌全案系统（Brandkit）。严格杜绝 AI 模板化廉价感与反模式。
+description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端架构、Awwwards 级高阶微动效（GSAP & Motion）、视觉 Token 硬刻度、高转化落地页（结构/文案/转化/SEO-AEO）、设计转动态展演（保真重建 + 故事循环 + MP4-GIF 导出）、企业级设计系统、既有系统审计重构、像素级 Image-to-Code 还原、Web/App 视觉原型分段生图及品牌全案系统（Brandkit）。严格杜绝 AI 模板化廉价感与反模式。
 ---
 
 # 🎨 专家级一体化前端与 UI/UX 架构系统 (Frontend UI/UX Master Protocol)
@@ -28,7 +28,7 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 
 ---
 
-## 3. 六大核心作业模式 (Operational Workflows)
+## 3. 八大核心作业模式 (Operational Workflows)
 
 根据任务诉求精准分流并执行对应工作流：
 
@@ -39,7 +39,9 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
   ├── 模式 C: 图像转代码 (Image-to-Code) ─────────► 深度提取分析 + 像素级防漂移还原
   ├── 模式 D: 原型生图 (Web/Mobile UI ImageGen) ──► 结构化 Prompt + 分段/全流生图
   ├── 模式 E: 品牌全案系统 (Brandkit Identity) ───► 策略推导 + 5大构型 + 3x3/2x3 展板
-  └── 模式 F: 语义设计系统 (Stitch DESIGN.md) ────► 语义化设计规范文件生成
+  ├── 模式 F: 语义设计系统 (Stitch DESIGN.md) ────► 语义化设计规范文件生成
+  ├── 模式 G: 高转化落地页 (Landing Page) ────────► 需求采集 + 结构/文案/转化 + SEO/AEO
+  └── 模式 H: 设计转动态展演 (Design-to-Motion) ──► 保真重建 + 故事循环 + 确定性录制导出
 ```
 
 ### 模式 A: 从零构建 (Greenfield Web/App)
@@ -74,6 +76,24 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 1. **语义化标准**：生成专供 Agent 解析的 `DESIGN.md`（详见 `references/stitch-design-system.md`）。
 2. **规范固化**：明确氛围定义、严禁色与功能色 Hex、排版字阶、组件状态与无障碍契约。
 
+### 模式 G: 高转化落地页 (Landing Page System)
+1. **意图收紧**：一页只赢一个意图，单一主张、单一受众、单一主行动。落地页不是首页，别把全部导航与全量功能塞进首屏。
+2. **先采集后动手**：按 `references/landing-page-system.md` 第 1 节的四组问题一次批量问齐（目的 / 受众 / 证明 / 约束）；缺答就给合理假设并用一行声明，不得卡住构建。
+3. **结构先行**：首屏（标题 / 副标 / 单一 CTA / 一条证明 / 主视觉）→ 中段论证（问题到方案 / 利益点 / 三步 / 案例）→ 底部异议处理（FAQ / 风险反转 / 终版 CTA），并在中段插入强制标语揭示区。
+4. **文案即转化**：标题走公式、CTA 用动词加所得、利益点写“利益 + 证据”，具体到数字；严禁颠覆、赋能、一站式、极致、无缝这类空话。
+5. **视觉落刻度**：字号、间距、圆角、暗色底必须命中 `references/visual-system-tokens.md` 的刻度表，零任意值。
+6. **逐段构建**：Hero → 利益点 → 怎么用 → 证明 → FAQ → 终版 CTA，一段一验证，禁止每次迭代重写整页。
+7. **上线前补齐**：状态全覆盖（hover / active / focus / loading / empty / error）、SEO 与 AEO、法务与元数据清单逐项过关。
+
+### 模式 H: 设计转动态展演 (Design-to-Motion)
+1. **先定上下文**：展演（整帧循环 + MP4/GIF 交付）还是站点（只有合资格分区入场，文本走活 HTML）。在站点代码库内默认站点，只有设计稿时默认展演。
+2. **保真优先**：先把静帧还原到可逐像素比对（`?still` + PSNR 阈值），再谈动效；静帧未过不许编码导出。
+3. **背景神圣**：照片或纹理背景在任何阶段、任何变体里都不移动、不模糊、不淡化、不改色。
+4. **空态起步**：载入编排从空态起，元素上浮并从模糊转清晰，按阅读顺序错峰；严禁首帧即成品。
+5. **故事是主角**：每个视觉先写一句话故事（图表被读取、列表收到新条目、提示词被敲入），起止必须落回精确设计。只载入不演戏视为未完成。
+6. **确定性录制**：禁用实时录屏，用假时钟逐帧步进截图，接缝与空拍对齐后再用 ffmpeg 编三件套（MP4 / 网页 GIF / 800×500 GIF）。
+7. **自检闭环**：溢出、接缝、空拍、回位、联系表五项全过才交付，逐项细节见 `references/design-to-motion-showcase.md` 第 16 节。
+
 ---
 
 ## 4. 专家级工程与设计铁律 (Engineering Invariants)
@@ -96,6 +116,15 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
    - 仅对 `transform` 与 `opacity` 进行硬件加速动画，严禁操作 `top/left/width/height`。
    - 动效组件必须封装在 Client 独立叶子组件中，严格遵循 `prefers-reduced-motion` 降级策略。
    - 绝对禁止使用 `window.addEventListener('scroll')`，统一使用 `motion/react` 或 GSAP ScrollTrigger。
+7. **Token 刻度落点 (Scale Snapping)**：
+   - 字号、间距、圆角一律落表内刻度，严禁 `text-[19px]`、`mt-[13px]`、`rounded-[10px]` 这类任意值；非标尺寸向下吸附到最近刻度并连带其行高。
+   - 嵌套圆角按 `内圆角 = 外圆角 − 间距` 推导，间距 ≥ 32px 或结果 ≤ 2px 时不套用公式。
+8. **状态与内容真实性 (States & Real Content)**：
+   - 每个交互元素交齐 hover / active / focus（可见焦点环）/ loading（贴合真实布局的骨架屏）/ empty（成形引导态）/ error（就地内联，禁 `alert`），零死链。
+   - 严禁 Lorem Ipsum 与“标题写这里”；人名、品牌、数字、日期必须像真实产品产出，零整数化假数据与空话填充。
+9. **版式硬边界与断行 (Layout Hard Edges)**：
+   - 卡片边框要么四边全有要么全无，严禁单边描边；背景一律纯色，严禁背景渐变（唯一例外：英雄区标题文字渐变）。
+   - 英雄区标题与副标题宽度上限 `680px`，断行只落在语义停顿处；标题用 `text-wrap: balance`、正文用 `text-wrap: pretty`，严禁末行孤字。
 
 ---
 
@@ -122,6 +151,9 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 - **`references/image-generation-prompts.md`**：Web 单 Section 单图标准、Mobile 多屏原型流规范、Prompt 模板与图像反模式。
 - **`references/brandkit-and-identity.md`**：品牌策略、5 大标志构型法、3x3/2x3 视觉展板体系与全触点规范。
 - **`references/stitch-design-system.md`**：Google Stitch 语义化 `DESIGN.md` 生成规范与标准契约。
+- **`references/visual-system-tokens.md`**：字体白名单、字阶与间距刻度表、嵌套圆角公式、边框与暗色底规范、英雄区排版、图标库白名单。
+- **`references/landing-page-system.md`**：落地页需求采集、页结构、版式选型、转化文案、SEO/AEO、内容真实性、状态矩阵、上线必备清单与标语揭示区。
+- **`references/design-to-motion-showcase.md`**：设计稿保真重建、图层导出、载入编排、故事循环、循环周期、PSNR 自检与 MP4/GIF 确定性导出。
 
 ---
 
@@ -142,3 +174,25 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 - [ ] **动效安全**：是否已包装 `prefers-reduced-motion`，无滚动监听事件监听器，仅操作 transform/opacity？
 - [ ] **移动端折叠**：所有复杂非对称布局在 `< 768px` 是否均有明确的单列降级与防横向滚动处理？
 - [ ] **资产真实性**：图文资产是否真实生动，无 Div 拼凑假截图与无意义图表？
+- [ ] **刻度落点**：所有字号、间距、圆角是否均为表内刻度，无任意值残留？
+- [ ] **断行质量**：标题是否按语义断行、无末行孤字，宽度是否 ≤ 680px？
+- [ ] **状态齐备**：hover / active / focus / loading / empty / error 是否可见且无死链？
+- [ ] **内容真实**：是否使用真实文案与可信人名品牌、非整数数据，零占位拉丁文与空话？
+- [ ] **落地页专检**（仅落地页）：是否单一主张单一 CTA、标语揭示区在场、SEO 与 AEO、法务与元数据齐备？
+- [ ] **展演专检**（仅展演）：静帧是否过 PSNR、故事是否回落原设计、接缝与空拍是否闭合、导出是否确定性？
+
+---
+
+## 8. 上游素材与许可 (Upstream Credits)
+
+本技能在自有体系基础上，融合了以下 MIT 许可素材的工程规范，并已按本文档的语义与硬约束重写：
+
+| 来源 | 贡献内容 | 许可 |
+| :--- | :--- | :--- |
+| [ai-design-skills](https://github.com/elayadesign/ai-design-skills) by Elaya | 落地页策略与视觉刻度、设计转动态展演的保真重建、故事循环与确定性录制 | MIT |
+| [taste-skill](https://github.com/Leonxlnx/taste-skill) by Leon Lin | 内容真实性、重构审计与动效导航思路（经 ai-design-skills 转述） | MIT |
+| [emilkowalski/skills](https://github.com/emilkowalski/skills) | 只动廉价属性、控制 blur 半径、对象禁从零生长、reduced-motion 降级 | MIT |
+| [Owl-Listener/designer-skills](https://github.com/Owl-Listener/designer-skills) | 骨架屏贴合真实内容、错峰入场 | MIT |
+| [dylantarre/animation-principles](https://github.com/dylantarre/animation-principles) | 同级循环错峰、末帧与首帧衔接 | MIT |
+
+上游原文可整体替换其自身文档，但在本仓库内以其规范语义为准；文本与本文档铁律冲突时，以本文档为准。
