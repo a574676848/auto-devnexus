@@ -14,3 +14,20 @@ skills/web-search/.env
 # cdp-control skill
 skills/cdp-control/scripts/__pycache__/
 # 本地 Laya 服务地址与令牌写在用户目录（~/.config/cdp-control/laya.json），不入库
+
+# 服务接入类技能的本地凭据与缓存（按需生成，不入库）
+skills/my-coffee/*token*
+skills/kuaidi100/*key*
+skills/cloudflare/config.json
+skills/baidupan/credentials.json
+skills/mijia/ha.json
+skills/mijia/ha_mcp_token.txt
+skills/amap/key.txt
+skills/didi/key.txt
+skills/mail/accounts.json
+skills/fliggy/config.json
+skills/rails/stations.js
+
+# Python 编译产物
+__pycache__/
+*.pyc

@@ -18,6 +18,8 @@
 
 Auto-devnexus 是一套专为 Claude Code、OpenCode 等支持 MCP 的 AI 编程助手设计的 Skill 集合。它提供了全自动化的 [GitNexus](https://github.com/abhigyanpatwari/GitNexus) 部署、管理和调度能力，让你的 AI 助手能够无缝集成代码图谱检索功能。
 
+除代码图谱能力外，仓库还收纳了一组「官方 MCP / CLI / REST 的轻薄封装」技能：把瑞幸咖啡、快递100、12306、飞猪、滴滴、高德、百度网盘、米家、邮箱、Cloudflare 这类日常服务翻译成本地命令行脚本，AI 助手无需注入额外 MCP 配置即可调用，凭据一律留在本机、不进仓库。
+
 ### 什么是 GitNexus？
 
 GitNexus 是一个强大的代码库分析工具，能够：
@@ -78,6 +80,26 @@ Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL
 
 ---
 
+### 🔌 本地服务接入系列（官方 MCP / CLI / REST 封装）
+
+官方只提供 MCP、只提供 CLI，或压根没有 SDK 的服务，统一翻译成本地命令行：脚本零第三方依赖，不往 AI 助手的 `.mcp.json` 注入配置，凭据只留在环境变量或用户目录。
+
+- **`my-coffee`**：瑞幸咖啡下单 —— 查门店、搜商品、查 SKU 明细、预览建单、订单与取餐码、取消订单（官方 MCP → `luckin.py`）
+- **`kuaidi100`**：快递100 —— 实时轨迹、快递公司识别、运费与时效预估（官方 MCP → `kd100.py`）
+- **`rails`**：铁路 12306 —— 车次、时刻、历时与席别余票，复用官网查询链路，无需 Key
+- **`fliggy`**：飞猪 —— 机票、火车票、酒店、门票、万豪酒店与套餐搜索（官方 CLI `@fly-ai/flyai-cli`）
+- **`didi`**：滴滴出行 —— 打车估价、跳转 App 下单链接、订单与司机位置、取消订单（官方 MCP → `didimcp.py`，默认沙箱）
+- **`amap`**：高德地图 —— 地理编码、POI 与周边、路径规划、距离与天气（Web 服务 REST API，只查不叫车）
+- **`baidupan`**：百度网盘 —— 账号信息、容量、列目录、搜索、取下载直链（开放平台 OAuth 2.0 + REST API）
+- **`mijia`**：米家智能家居 —— 通过 Home Assistant 读实体状态、开关灯、执行场景（HA REST API → `mijia.py`）
+- **`mail`**：邮箱 —— IMAP 读信与检索、SMTP 发信，多账号（QQ / 163 / Gmail）
+- **`memos`**：凭据库 —— 按服务存取密码 / Key / Token（Memos CLI 封装）
+- **`cloudflare`**：Cloudflare —— 域名与 DNS 记录增删改、缓存清理与任意 API 调用（REST API → `cf.py`）
+
+> 生活服务类技能默认「只查不订 / 只查不买」，下单动作留给用户在官方 App 完成；涉及支付的操作一律先预览价格，绝不自动扣款。
+
+---
+
 ## 🚀 快速开始
 
 ### 前置要求
@@ -86,6 +108,26 @@ Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL
 - Node.js >= 16 (仅 GitNexus 相关技能需要)
 - npm >= 8 (仅 GitNexus 相关技能需要)
 - Python >= 3.6 (仅 Jira 集成技能需要)
+
+### 凭据约定
+
+接入类技能不把凭据写进仓库：优先读环境变量，其次读用户目录下的配置文件（各技能均支持对应的 `*_DATA_DIR` 环境变量覆盖目录）。
+
+| 技能 | 环境变量 | 本地凭据文件 |
+|------|----------|--------------|
+| `my-coffee` | `LUCKIN_MCP_TOKEN` | `~/.my-coffee/token.txt` |
+| `kuaidi100` | `KUAIDI100_API_KEY` | `~/.kuaidi100/key.txt` |
+| `fliggy` | `FLYAI_API_KEY` | `~/.flyai/config.json`（由 `flyai config set` 写入） |
+| `cloudflare` | `CLOUDFLARE_API_TOKEN` | `~/.cloudflare/config.json` |
+| `mijia` | — | `~/.mijia/ha.json` + `~/.mijia/ha_mcp_token.txt` |
+| `baidupan` | — | `~/.baidupan/credentials.json` |
+| `amap` | — | `~/.amap/key.txt` |
+| `didi` | — | `~/.didi/key.txt` |
+| `mail` | — | `~/.mail/accounts.json` |
+| `memos` | `MEMOS_PAT` | `~/.config/memos-cli/config.yaml` |
+| `rails` | 无需 Key | `~/.rails/stations.js`（站名缓存） |
+
+上述本地文件与 `__pycache__` 均已列入 `.gitignore`。
 
 ### 安装
 
@@ -174,6 +216,18 @@ Windows WezTerm 安装：
 | [dev-test](skills/dev-test/) | 测试统一入口：写用例、冒烟、集成/e2e、UI 视觉、bug 回归与增量测试 | "测试", "写用例", "冒烟", "集成测试", "e2e", "bug 回归", "覆盖矩阵" |
 | [web-search](skills/web-search/) | 四路并行 web 搜索（Bing RSS / AnySearch / TinyFish / Tavily），跨源去重与共识排序 | "搜索", "联网", "查资料", "web search", "fact-check", "调研" |
 | [cdp-control](skills/cdp-control/) | 用 Chrome DevTools Protocol 驱动并取证任意 Chromium 内核界面（WebView2 / Tauri / Electron / Chrome / 无头），纯标准库零依赖、跨平台 | "CDP", "真机验证", "桌面端验证", "点击", "输入", "截图取证", "remote-debugging-port", "DevTools 协议" |
+
+| [my-coffee](skills/my-coffee/) | 瑞幸咖啡下单：门店、商品与 SKU、预览建单、订单与取餐码、取消订单（官方 MCP 的 CLI 封装） | "瑞幸", "点杯咖啡", "生椰拿铁", "取餐码", "取消订单" |
+| [kuaidi100](skills/kuaidi100/) | 快递100 查快递：实时轨迹、快递公司识别、运费与时效预估（官方 MCP 的 CLI 封装） | "快递到哪了", "查单号", "寄件多少钱", "几天能到" |
+| [rails](skills/rails/) | 铁路 12306 余票查询：车次、时刻、历时与席别余票（复用官网查询链路，无需 Key） | "有没有票", "几点的车", "还有座吗" |
+| [fliggy](skills/fliggy/) | 飞猪旅行查询：机票、火车票、酒店、门票、万豪酒店与套餐（官方 CLI） | "飞杭州多少钱", "有什么酒店", "门票多少", "规划行程" |
+| [didi](skills/didi/) | 滴滴出行：打车估价、跳转 App 下单链接、订单与司机位置、取消订单（官方 MCP 的 CLI 封装） | "打车多少钱", "叫个车", "车到哪了", "取消订单" |
+| [amap](skills/amap/) | 高德地图查询：地理编码、POI 与周边、路径规划、距离、天气（Web 服务 API） | "从 A 到 B 多远", "附近有什么", "这个地址在哪", "明天天气" |
+| [baidupan](skills/baidupan/) | 百度网盘：账号信息、容量、列目录、搜索文件、取下载直链（开放平台 OAuth 2.0） | "百度网盘", "网盘空间", "找网盘里的文件", "下载直链" |
+| [mijia](skills/mijia/) | 米家智能家居：通过 Home Assistant 读状态、开关灯、执行场景（HA REST API） | "米家", "小爱", "把主卧灯关掉", "智能家居状态" |
+| [mail](skills/mail/) | 邮箱收发：IMAP 读信与检索、SMTP 发信，多账号（QQ / 163 / Gmail） | "查邮件", "有没有新邮件", "发邮件", "找某封邮件" |
+| [memos](skills/memos/) | 凭据库读写：按服务存取密码 / Key / Token（Memos CLI 封装） | "存密码", "查某个服务的 Key", "凭据库" |
+| [cloudflare](skills/cloudflare/) | Cloudflare 管理：域名/DNS 增删改、缓存清理与任意 API 调用（零依赖脚本） | "Cloudflare", "加条 A 记录", "改 CNAME", "清缓存" |
 
 ## 📦 通用脚本
 
