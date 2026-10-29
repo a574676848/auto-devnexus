@@ -1,6 +1,6 @@
 # Skill 规范文档
 
-本文档定义了 Auto-GitNexus 中 Skill 的开发规范和标准。
+本文档定义了 Auto-Devnexus 中 Skill 的开发规范和标准。
 
 ## 什么是 Skill？
 
@@ -13,7 +13,7 @@ Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL
 ```
 skills/<skill-name>/
 ├── SKILL.md              # 必须：AI 调用入口定义
-├── README.md             # 必须：用户说明文档
+├── README.md             # 可选：说明较长时才拆出来，短说明直接写进 SKILL.md
 ├── Reference.md          # 可选：技术参考资料
 └── scripts/
     └── <skill-name>.sh   # 必须：核心执行脚本
@@ -24,7 +24,7 @@ skills/<skill-name>/
 ```
 skills/<skill-name>/
 ├── SKILL.md              # 必须：AI 调用入口定义
-├── README.md             # 必须：用户说明文档
+├── README.md             # 可选：说明较长时才拆出来，短说明直接写进 SKILL.md
 ├── Reference.md          # 可选：技术参考资料
 ├── MEMORY.md             # 可选：记忆系统（如 Jira 集成）
 └── scripts/              # 脚本目录（或 scripts_py/）

@@ -1,6 +1,6 @@
-# Contributing to Auto-GitNexus
+# Contributing to Auto-Devnexus
 
-首先，感谢你愿意为 Auto-GitNexus 做出贡献！❤️
+首先，感谢你愿意为 Auto-Devnexus 做出贡献！❤️
 
 以下是一组贡献指南，请花几分钟阅读，这将帮助我们更高效地协作。
 
@@ -62,8 +62,8 @@
 
 ```bash
 # 克隆仓库
-git clone git@github.com:a574676848/auto-gitnexus.git
-cd auto-gitnexus
+git clone git@github.com:a574676848/auto-devnexus.git
+cd auto-devnexus
 
 # 确保脚本可执行
 chmod +x skills/*/scripts/*.sh
@@ -72,45 +72,27 @@ chmod +x skills/*/scripts/*.sh
 ### 项目结构
 
 ```
-auto-gitnexus/
-├── skills/                    # Skill 集合目录
-│   ├── gitnexus-setup/       # GitNexus 环境初始化 Skill
-│   │   ├── SKILL.md          # Skill 定义文件（AI 调用入口）
-│   │   ├── README.md         # Skill 说明文档
-│   │   ├── Reference.md      # 参考资料
-│   │   └── scripts/
-│   │       └── gitnexus-setup.sh
-│   ├── gitnexus-wiki/        # GitNexus Wiki 生成器 Skill
-│   │   ├── SKILL.md
-│   │   ├── README.md
-│   │   ├── Reference.md
-│   │   └── scripts/
-│   │       └── gitnexus-wiki.sh
-│   ├── jira-integration/     # Jira 集成 Skill
-│       ├── SKILL.md          # Skill 定义文件
-│       ├── MEMORY.md         # 多层认知记忆系统
-│       └── scripts_py/       # Python 脚本目录
-│           ├── auth.py       # 身份认证
-│           ├── create.py     # 创建工单
-│           ├── delete.py     # 删除工单
-│           ├── get_issue.py  # 获取工单详情
-│           ├── schema.py     # 获取工单 schema
-│           ├── search.py     # 查询工单
-│           ├── transition.py # 工单状态流转
-│           ├── update.py     # 更新工单
-│           └── utils.py      # 工具函数
-│   └── open-source-docs/     # 开源项目文档建设 Skill
-│       ├── SKILL.md          # Skill 定义文件
-│       ├── README.md         # Skill 说明文档
-│       └── Reference.md      # 文档方法论与检查清单
-├── docs/                      # 项目文档
-├── .github/                   # GitHub 配置
-│   └── workflows/            # CI/CD 工作流
-├── LICENSE                    # 许可证
-├── CONTRIBUTING.md           # 本文件
-├── CODE_OF_CONDUCT.md       # 行为准则
-└── README.md                 # 项目主文档
-```
+auto-devnexus/
+├── skills/                    # 22 个 Skill，每个都是 SKILL.md 加可选 scripts/ 的自包含目录
+│   ├── gitnexus-setup/        # 代码图谱：环境初始化
+│   ├── gitnexus-wiki/         # 代码图谱：架构 Wiki 生成
+│   ├── codebase-memory-mcp-setup/  # CBM 安装与维护
+│   ├── jira-integration/      # Jira 工单（scripts_py/）
+│   ├── repo-parser/           # 仓库源码解析
+│   ├── dev-test/              # 测试路由入口加子手册
+│   ├── cdp-control/           # Chromium 界面驱动与取证
+│   ├── open-source-docs/      # 文档建设方法论
+│   ├── frontend-ui-ux/        # 前端与设计系统
+│   ├── image-generation/      # 图像生成
+│   ├── web-search/            # 四路并行搜索
+│   └── ...                    # 另有 11 个本地服务接入类 Skill
+├── scripts/windows/wezterm/   # 通用 Windows 自动化脚本
+├── docs/                      # 文档中心，索引见 docs/README.md
+├── .github/                   # Issue 模板、PR 模板、CI
+├── CONTRIBUTING.md            # 本文件
+├── CODE_OF_CONDUCT.md         # 行为准则
+├── LICENSE                    # MIT
+└── README.md                  # 项目主文档
 
 ### 提交规范
 

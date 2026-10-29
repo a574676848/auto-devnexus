@@ -1,327 +1,289 @@
 # Auto-Devnexus
 
 <p align="center">
-  <strong>🤖 AI 驱动的 Auto-Devnexus 自动化 Skill 集合</strong>
+  <strong>给 AI 编程助手补上「手和脚」——22 个可直接落地的 Skill 集合</strong>
 </p>
 
 <p align="center">
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
   </a>
-  <a href="#快速开始">
+  <a href="#-快速开始">
     <img src="https://img.shields.io/badge/Quick%20Start-5%20minutes-brightgreen" alt="Quick Start">
   </a>
+  <img src="https://img.shields.io/badge/Skills-22-blueviolet" alt="22 Skills">
+  <img src="https://img.shields.io/badge/Python-3.6%2B-3776AB" alt="Python 3.6+">
 </p>
 
 ---
-## 📖 简介
 
-Auto-devnexus 是一套专为 Claude Code、OpenCode 等支持 MCP 的 AI 编程助手设计的 Skill 集合。它提供了全自动化的 [GitNexus](https://github.com/abhigyanpatwari/GitNexus) 部署、管理和调度能力，让你的 AI 助手能够无缝集成代码图谱检索功能。
+## 📖 项目简介
 
-除代码图谱能力外，仓库还收纳了一组「官方 MCP / CLI / REST 的轻薄封装」技能：把瑞幸咖啡、快递100、12306、飞猪、滴滴、高德、百度网盘、米家、邮箱、Cloudflare 这类日常服务翻译成本地命令行脚本，AI 助手无需注入额外 MCP 配置即可调用，凭据一律留在本机、不进仓库。
+Auto-Devnexus 是一套面向 AI 编程助手的 **Skill 集合**。每个 Skill 是一份 `SKILL.md` 定义加一组可执行脚本，AI 助手读完说明就能调用，不需要你手工拼命令。
+
+它解决两类具体问题：
+
+1. **工程侧缺能力**：代码图谱、仓库解析、工单流转、测试编排、界面取证、文档体系，这些能力主流 AI 助手并不自带。
+2. **第三方服务难接**：瑞幸、快递100、12306、飞猪、滴滴、高德、百度网盘、米家、邮箱、Cloudflare 这类服务，官方只给 MCP、只给 CLI，或只给 REST。仓库把它们统一翻译成本地命令行脚本——**不向你编辑器的 `.mcp.json` 注入任何配置**，零第三方依赖，凭据只留在本机。
+
+设计取舍只有一条：**能用一个标准库脚本解决的，就不引入框架、常驻进程或全局 MCP 配置。** 需要长期驻留的只有 GitNexus 的图谱服务，其余全部是「调用即走」的一次性进程。
 
 ### 什么是 GitNexus？
 
-GitNexus 是一个强大的代码库分析工具，能够：
+[GitNexus](https://github.com/abhigyanpatwari/GitNexus) 是一个代码库分析工具，能：
+
 - 🔍 解析 Git 仓库，生成 AST 与调用图谱
 - 🌐 提供本地 HTTP 图谱微服务
 - 📝 调用 LLM 生成项目架构 Wiki
 - 🔗 通过 MCP 协议与 AI 助手集成
 
+本仓库的 `gitnexus-setup` 与 `gitnexus-wiki` 两个 Skill 负责它的安装、索引、钩子与 Wiki 生成。
+
 ### 什么是 Skill？
 
-Skill 是一种 AI 可识别的自动化脚本集合，通过标准化的 `SKILL.md` 文件定义触发条件和执行逻辑，让 AI 助手能够自主调用复杂的自动化任务。
+Skill 是一种 AI 可识别的自动化脚本集合：`SKILL.md` 用 frontmatter 声明触发条件，正文写清执行步骤与边界，脚本放在同目录的 `scripts/` 下。AI 助手按需加载，人工也能直接跑。
 
 ---
 
-## ✨ 功能特性
+## 🗂 目录
 
-### 🔧 GitNexus 环境初始化 (`gitnexus-setup`)
-
-- **自动全局安装**：检测并安装 npm 包 `gitnexus`
-- **异步图谱构建**：后台运行 `gitnexus analyze` 生成 AST 索引
-- **MCP 配置注入**：自动注册图谱检索工具到 AI 助手
-- **自动同步钩子**：挂载 `post-commit` 钩子实现代码提交后自动更新
-- **守护进程管理**：进程防抖（防冲突）、全异步非阻塞执行
-- **定制化高位端口**：使用 `54321` 端口避免冲突
-
-### 📝 GitNexus Wiki 生成器 (`gitnexus-wiki`)
-
-- **智能层级读取**：优先读取 `~/.gitnexus/config.json` → OpenCode 配置 → Claude Code 配置
-- **全局持久化**：新配置保存到 `~/.gitnexus/config.json`，后续使用无需重复输入
-- **进程防抖**：杀掉旧的 wiki 进程，避免资源冲突
-- **异步执行**：后台生成文档，不阻塞用户操作
-- **多模型支持**：支持 OpenAI、Anthropic 及兼容接口
-
-### 📋 Jira 集成 (`jira-integration`)
-
-- **零依赖**：纯 Python 3 实现，无需额外安装依赖
-- **Jira Server 7.5.2 优化**：专门适配 v2 API
-- **完整工单操作**：支持查询、创建、更新、流转和删除工单
-- **智能打单**：两阶段机制，先获取 schema 再提交
-- **多层认知记忆**：内置 MEMORY.md 系统，持续学习和进化
-- **安全认证**：支持密码和 API Token 认证
-- **评论查询**：支持读取工单评论，便于排查问题闭环
-
-### 🔍 仓库解析 (`repo-parser`)
-
-- **多源解析**：支持 GitHub（公开/私有）和 GitLab/Gitea/内网等私有仓库
-- **智能凭证管理**：三级递进凭证策略（集成插件 → 本地缓存 → 用户手动提供），凭证缓存至 `%USERPROFILE%\.repo-parser\`
-- **分块深度阅读**：自动检测项目类型，过滤无关文件，分卷切分代码输出，防止上下文超载
-- **目录与执行分离**：脚本在技能目录，代码 clone 和输出在执行目录，通过 `--workdir` 参数控制
-
-### 🪟 Windows WezTerm 自动化脚本
-
-- **一键安装**：自动检测 WezTerm 是否已安装，未安装时优先使用 `winget`，失败后回退 GitHub MSI 静默安装
-- **幂等执行**：重复执行时跳过安装，仅重置用户目录中的 WezTerm 配置与辅助脚本
-- **自动备份**：覆盖 `wezterm.lua` 之前自动备份旧配置，只保留最近 5 份
-- **图片粘贴增强**：提供剪贴板图片落盘脚本，配合 `wezterm.lua` 支持智能粘贴
-- **缓存清理**：自动清理 `%TEMP%\WezTerm_Images` 中超过 1 天的旧图片
+- [项目简介](#-项目简介)
+- [能力一览](#-能力一览)
+- [快速开始](#-快速开始)
+- [凭据与安全约定](#-凭据与安全约定)
+- [通用脚本](#-通用脚本)
+- [项目结构](#️-项目结构)
+- [文档导航](#-文档导航)
+- [开发与贡献](#️-开发与贡献)
+- [许可证](#-许可证)
+- [致谢](#-致谢)
 
 ---
 
-### 🔌 本地服务接入系列（官方 MCP / CLI / REST 封装）
+## ✨ 能力一览
 
-官方只提供 MCP、只提供 CLI，或压根没有 SDK 的服务，统一翻译成本地命令行：脚本零第三方依赖，不往 AI 助手的 `.mcp.json` 注入配置，凭据只留在环境变量或用户目录。
+22 个 Skill，按用途分组；点击名称进入各自的 `SKILL.md`。
 
-- **`my-coffee`**：瑞幸咖啡下单 —— 查门店、搜商品、查 SKU 明细、预览建单、订单与取餐码、取消订单（官方 MCP → `luckin.py`）
-- **`kuaidi100`**：快递100 —— 实时轨迹、快递公司识别、运费与时效预估（官方 MCP → `kd100.py`）
-- **`rails`**：铁路 12306 —— 车次、时刻、历时与席别余票，复用官网查询链路，无需 Key
-- **`fliggy`**：飞猪 —— 机票、火车票、酒店、门票、万豪酒店与套餐搜索（官方 CLI `@fly-ai/flyai-cli`）
-- **`didi`**：滴滴出行 —— 打车估价、跳转 App 下单链接、订单与司机位置、取消订单（官方 MCP → `didimcp.py`，默认沙箱）
-- **`amap`**：高德地图 —— 地理编码、POI 与周边、路径规划、距离与天气（Web 服务 REST API，只查不叫车）
-- **`baidupan`**：百度网盘 —— 账号信息、容量、列目录、搜索、取下载直链（开放平台 OAuth 2.0 + REST API）
-- **`mijia`**：米家智能家居 —— 通过 Home Assistant 读实体状态、开关灯、执行场景（HA REST API → `mijia.py`）
-- **`mail`**：邮箱 —— IMAP 读信与检索、SMTP 发信，多账号（QQ / 163 / Gmail）
-- **`memos`**：凭据库 —— 按服务存取密码 / Key / Token（Memos CLI 封装）
-- **`cloudflare`**：Cloudflare —— 域名与 DNS 记录增删改、缓存清理与任意 API 调用（REST API → `cf.py`）
+### 工程与研发
 
-> 生活服务类技能默认「只查不订 / 只查不买」，下单动作留给用户在官方 App 完成；涉及支付的操作一律先预览价格，绝不自动扣款。
+| Skill | 能力 | 依赖 |
+|-------|------|------|
+| [gitnexus-setup](skills/gitnexus-setup/) | 自动安装 GitNexus、后台建图谱、注入 MCP 配置、挂 `post-commit` 钩子、起 54321 端口 Web UI | Node.js / npm |
+| [gitnexus-wiki](skills/gitnexus-wiki/) | 读取 LLM 配置，异步生成项目架构 Wiki 到 `.gitnexus/wiki/` | Node.js / LLM API Key |
+| [codebase-memory-mcp-setup](skills/codebase-memory-mcp-setup/) | 跨平台安装、迁移、增强 Codebase Memory MCP（CBM），配置 graph-first 主导模式与 auto_index | Node.js |
+| [jira-integration](skills/jira-integration/) | Jira 工单查询、创建、更新、流转、删除、评论与工时（针对 Jira Server 7.5.2 的 v2 API） | Python 标准库 |
+| [repo-parser](skills/repo-parser/) | 解析 GitHub 与私有 Git 仓库源码，三级凭证策略加分块深度阅读，防上下文超载 | Python 标准库 |
+| [dev-test](skills/dev-test/) | 测试统一入口，路由到用例编写、冒烟、集成 / e2e、UI 视觉、bug 回归与增量测试等 8 个子手册 | 无 |
+| [cdp-control](skills/cdp-control/) | 用 Chrome DevTools Protocol 驱动并取证 WebView2 / Tauri / Electron / Chrome / 无头 Chromium | Python 标准库 |
+
+### 文档、设计与检索
+
+| Skill | 能力 | 依赖 |
+|-------|------|------|
+| [open-source-docs](skills/open-source-docs/) | 开源项目文档建设方法论：README 门面、docs 信息架构、命名纠偏、中文友好化 | 无 |
+| [frontend-ui-ux](skills/frontend-ui-ux/) | 全栈前端与 UI/UX 系统：视觉 Token、高阶微动效、高转化落地页、Image-to-Code、品牌全案 | 无 |
+| [image-generation](skills/image-generation/) | 按 `config.toml` 声明的图像模型生成或编辑图片 | Python 标准库 + 模型 Key |
+| [web-search](skills/web-search/) | 四路并行搜索与抓取（Bing RSS / AnySearch / TinyFish / Tavily），跨源去重后按共识排序 | Python 标准库 + 各源 Key |
+
+### 本地服务接入
+
+这一组的共同约定：脚本零第三方依赖，凭据不入库，生活服务一律「只查不订 / 只查不买」。细则见 [docs/local-services.md](docs/local-services.md)。
+
+| Skill | 能力 | 接入形态 |
+|-------|------|----------|
+| [my-coffee](skills/my-coffee/) | 瑞幸咖啡：查门店、搜商品、预览建单、订单与取餐码、取消订单 | 官方 MCP 转 `luckin.py` |
+| [kuaidi100](skills/kuaidi100/) | 快递100：实时轨迹、快递公司识别、运费与时效预估 | 官方 MCP 转 `kd100.py` |
+| [didi](skills/didi/) | 滴滴出行：打车估价、跳转 App 下单链接、订单与司机位置、取消订单 | 官方 MCP 转 `didimcp.py`（默认沙箱） |
+| [fliggy](skills/fliggy/) | 飞猪：机票、火车票、酒店、景点门票、万豪酒店与套餐 | 官方 CLI `@fly-ai/flyai-cli` |
+| [rails](skills/rails/) | 铁路 12306：车次、时刻、历时与席别余票 | 复用官网查询链路，无需 Key |
+| [amap](skills/amap/) | 高德地图：地理编码、POI 与周边、路径规划、距离、天气 | Web 服务 REST API |
+| [baidupan](skills/baidupan/) | 百度网盘：账号信息、容量、列目录、搜索、取下载直链 | 开放平台 OAuth 2.0 加 REST |
+| [mijia](skills/mijia/) | 米家智能家居：读实体状态、开关灯、执行场景 | Home Assistant REST API |
+| [mail](skills/mail/) | 邮箱：IMAP 读信与检索、SMTP 发信，QQ / 163 / Gmail 多账号 | IMAP 与 SMTP |
+| [memos](skills/memos/) | 凭据库：按服务存取密码、Key、Token | 官方 CLI `memos-cli` |
+| [cloudflare](skills/cloudflare/) | Cloudflare：域名与 DNS 增删改、缓存清理、任意 API 调用 | REST API 转 `cf.py` |
 
 ---
 
 ## 🚀 快速开始
 
-### 前置要求
+### 1. 前置要求
 
-- Git >= 2.0
-- Node.js >= 16 (仅 GitNexus 相关技能需要)
-- npm >= 8 (仅 GitNexus 相关技能需要)
-- Python >= 3.6 (仅 Jira 集成技能需要)
+- **Git** >= 2.0
+- **Python** >= 3.6（Jira 集成与全部本地服务脚本；除 Jira 外均为标准库实现，**无需 pip 安装任何依赖**）
+- **Node.js** >= 16 / **npm** >= 8（GitNexus 两个 Skill，以及飞猪官方 CLI）
+- **PowerShell** 5.1+ 或 7（仅 Windows 下的 WezTerm 脚本需要）
 
-### 凭据约定
+可选外部 CLI，按需安装：
 
-接入类技能不把凭据写进仓库：优先读环境变量，其次读用户目录下的配置文件（各技能均支持对应的 `*_DATA_DIR` 环境变量覆盖目录）。
+```bash
+npm i -g gitnexus                 # gitnexus-setup / gitnexus-wiki
+npm i -g @fly-ai/flyai-cli        # fliggy
+# memos 由 memos-cli 提供，装好后执行 memos auth status 验证
+```
+
+### 2. 安装
+
+```bash
+git clone git@github.com:a574676848/auto-devnexus.git
+cd auto-devnexus
+```
+
+Linux / macOS 下为两个 Shell 脚本补执行权限：
+
+```bash
+chmod +x skills/*/scripts/*.sh
+```
+
+Python 脚本无需安装步骤，`python skills/<skill>/scripts/<script>.py --help` 即可查看子命令。Windows 上如 `python` 未进 PATH，用 `py` 代替。
+
+### 3. 验证
+
+挑一个不依赖任何 Key 的 Skill 试跑：
+
+```bash
+python skills/rails/scripts/rail.py stations 厦门
+```
+
+能打印出车站电报码表即说明环境就绪。
+
+### 4. 调用方式
+
+**方式一：交给 AI 助手（推荐）**
+
+对支持 Skill / MCP 的助手直接说人话，它会自行加载对应 `SKILL.md`：
+
+> "初始化 GitNexus 环境"
+> "用 GitNexus 帮我生成项目架构 Wiki"
+> "帮我在 Jira 创建一个工单"
+> "查一下我有没有杭州到厦门的余票"
+> "把主卧的灯关掉"
+
+**方式二：手动执行**
+
+```bash
+# GitNexus 环境初始化与 Wiki
+./skills/gitnexus-setup/scripts/gitnexus-setup.sh
+./skills/gitnexus-wiki/scripts/gitnexus-wiki.sh
+
+# Jira
+python skills/jira-integration/scripts_py/auth.py --domain "https://jira.example.com" --user "<账号>" --token "<Token>"
+python skills/jira-integration/scripts_py/search.py --jql "assignee = currentUser() AND status = 'Open'"
+
+# 仓库解析
+python skills/repo-parser/scripts/parse_github.py https://github.com/user/repo --workdir ./parse-out
+
+# 本地服务（示例）
+python skills/amap/scripts/amap.py geo "厦门北站" --city 厦门
+python skills/cloudflare/scripts/cf.py zones
+python skills/kuaidi100/scripts/kd100.py tools
+```
+
+每个 Skill 的完整命令集见其 `SKILL.md`，本地服务类见 [docs/local-services.md](docs/local-services.md)。
+
+---
+
+## 🔐 凭据与安全约定
+
+接入类 Skill 一律遵守三条：
+
+1. **不写进仓库**：凭据只放环境变量或用户目录下的配置文件，仓库内只留 `.env.example` 与 `.gitignore` 规则。
+2. **读取有优先级**：环境变量优先于用户目录配置文件，两者都没有时报错退出，不静默使用兜底假值。
+3. **可重定向**：每个 Skill 都支持对应的 `*_DATA_DIR` 环境变量，把凭据目录挪到你想放的位置。
 
 | 技能 | 环境变量 | 本地凭据文件 |
 |------|----------|--------------|
-| `my-coffee` | `LUCKIN_MCP_TOKEN` | `~/.my-coffee/token.txt` |
+| `my-coffee` | `LUCKIN_MCP_TOKEN` | `~/.my-coffee/token.txt`（另有 `~/.my-coffee/LUCKIN_MCP_TOKEN` 兜底；官方 `luckin` CLI 读 `~/.luckin/.env` 的 `LUCKIN_MCP_ORDER_TOKEN`） |
 | `kuaidi100` | `KUAIDI100_API_KEY` | `~/.kuaidi100/key.txt` |
 | `fliggy` | `FLYAI_API_KEY` | `~/.flyai/config.json`（由 `flyai config set` 写入） |
 | `cloudflare` | `CLOUDFLARE_API_TOKEN` | `~/.cloudflare/config.json` |
-| `mijia` | — | `~/.mijia/ha.json` + `~/.mijia/ha_mcp_token.txt` |
+| `mijia` | — | `~/.mijia/ha.json`（HA 地址与账号）加 `~/.mijia/ha_mcp_token.txt`（长期访问令牌） |
 | `baidupan` | — | `~/.baidupan/credentials.json` |
 | `amap` | — | `~/.amap/key.txt` |
 | `didi` | — | `~/.didi/key.txt` |
 | `mail` | — | `~/.mail/accounts.json` |
 | `memos` | `MEMOS_PAT` | `~/.config/memos-cli/config.yaml` |
-| `rails` | 无需 Key | `~/.rails/stations.js`（站名缓存） |
+| `rails` | `RAILS_DATA_DIR` | `~/.rails/stations.js`（站名缓存，可随时删除） |
 
-上述本地文件与 `__pycache__` 均已列入 `.gitignore`。
+上述文件、`.env` 与 `__pycache__/` 均已列入 `.gitignore`。若你 fork 后新增凭据文件，请同步补规则。
 
-### 安装
-
-```bash
-# 克隆仓库
-git clone git@github.com:a574676848/auto-devnexus.git
-cd auto-devnexus
-
-# 确保脚本可执行
-chmod +x skills/*/scripts/*.sh
-```
-
-Windows 用户如需安装 WezTerm，可直接执行：
-
-```powershell
-.\scripts\windows\wezterm\install-wezterm.bat
-```
-
-### 使用
-
-#### 方式一：通过 AI 助手调用（推荐）
-
-对支持 MCP 的 AI 助手说：
-
-> "初始化 GitNexus 环境"
-
-或
-
-> "使用 GitNexus 帮我生成项目架构 Wiki"
-
-或
-
-> "帮我在 Jira 创建一个工单"
-
-或
-
-> "查询 Jira 中我的待办工单"
-
-AI 助手将自动识别并执行相应的 Skill。
-
-#### 方式二：手动执行
-
-```bash
-# 初始化 GitNexus
-./skills/gitnexus-setup/scripts/gitnexus-setup.sh
-
-# 生成 Wiki
-./skills/gitnexus-wiki/scripts/gitnexus-wiki.sh
-
-# Jira 集成（Python 脚本）
-python skills/jira-integration/scripts_py/auth.py --domain "<Jira域名>" --user "<账号>" --token "<密码/Token>"
-python skills/jira-integration/scripts_py/search.py --jql "assignee = currentUser() AND status = 'Open'"
-```
-
-Windows WezTerm 安装：
-
-```powershell
-.\scripts\windows\wezterm\install-wezterm.bat
-```
-
-执行后会自动生成：
-
-```text
-%USERPROFILE%\.config\wezterm\wezterm.lua
-%USERPROFILE%\.wezterm_cleanup.bat
-%USERPROFILE%\.wezterm_cleanup.ps1
-%USERPROFILE%\.wezterm_img_handler.ps1
-```
-
-详细说明见 [docs/windows-wezterm.md](docs/windows-wezterm.md)。
+**能力边界**：生活服务类 Skill 默认「只查不订、只查不买」，下单与支付动作留给官方 App；涉及金额的接口必须先预估价再进入下一步，绝不自动扣款。滴滴脚本默认走沙箱，`--prod` 需显式指定。
 
 ---
 
-## 📚 Skill 目录
-
-| Skill | 描述 | 触发关键词 |
-|-------|------|-----------|
-| [gitnexus-setup](skills/gitnexus-setup/) | 自动化安装、配置 GitNexus | "初始化 GitNexus", "配置 GitNexus", "启动 GitNexus" |
-| [gitnexus-wiki](skills/gitnexus-wiki/) | 生成项目架构 Wiki | "生成 Wiki", "创建文档", "写项目文档" |
-| [codebase-memory-mcp-setup](skills/codebase-memory-mcp-setup/) | 跨平台安装、迁移、配置与维护 Codebase Memory MCP（CBM） | "安装 CBM", "配置 MCP", "CBM 索引", "graph-first", "auto_index" |
-| [jira-integration](skills/jira-integration/) | Jira 工单管理集成 | "Jira", "工单", "创建工单", "查询工单", "更新工单" |
-| [repo-parser](skills/repo-parser/) | 仓库源码解析，支持 GitHub 及私有仓库 | "解析仓库", "读取代码", "查看仓库结构" |
-| [open-source-docs](skills/open-source-docs/) | 开源项目文档建设，重构 README、docs、示例说明与命名纠偏 | "重写 README", "整理 docs", "最佳开源项目文档", "中文友好化文档" |
-| [frontend-ui-ux](skills/frontend-ui-ux/) | 专家级一体化前端与 UI/UX 系统，含全栈架构、高阶微动效、视觉 Token 刻度、高转化落地页、设计转动态展演（MP4/GIF）、Image-to-Code 与品牌全案 | "前端", "UI/UX", "设计系统", "微动效", "落地页", "动效展演", "Image-to-Code", "品牌" |
-| [image-generation](skills/image-generation/) | 调用配置文件中声明的图像模型生成或编辑图片 | "生成图片", "画图", "编辑图片", "gpt-image-2", "z-image-turbo" |
-| [dev-test](skills/dev-test/) | 测试统一入口：写用例、冒烟、集成/e2e、UI 视觉、bug 回归与增量测试 | "测试", "写用例", "冒烟", "集成测试", "e2e", "bug 回归", "覆盖矩阵" |
-| [web-search](skills/web-search/) | 四路并行 web 搜索（Bing RSS / AnySearch / TinyFish / Tavily），跨源去重与共识排序 | "搜索", "联网", "查资料", "web search", "fact-check", "调研" |
-| [cdp-control](skills/cdp-control/) | 用 Chrome DevTools Protocol 驱动并取证任意 Chromium 内核界面（WebView2 / Tauri / Electron / Chrome / 无头），纯标准库零依赖、跨平台 | "CDP", "真机验证", "桌面端验证", "点击", "输入", "截图取证", "remote-debugging-port", "DevTools 协议" |
-
-| [my-coffee](skills/my-coffee/) | 瑞幸咖啡下单：门店、商品与 SKU、预览建单、订单与取餐码、取消订单（官方 MCP 的 CLI 封装） | "瑞幸", "点杯咖啡", "生椰拿铁", "取餐码", "取消订单" |
-| [kuaidi100](skills/kuaidi100/) | 快递100 查快递：实时轨迹、快递公司识别、运费与时效预估（官方 MCP 的 CLI 封装） | "快递到哪了", "查单号", "寄件多少钱", "几天能到" |
-| [rails](skills/rails/) | 铁路 12306 余票查询：车次、时刻、历时与席别余票（复用官网查询链路，无需 Key） | "有没有票", "几点的车", "还有座吗" |
-| [fliggy](skills/fliggy/) | 飞猪旅行查询：机票、火车票、酒店、门票、万豪酒店与套餐（官方 CLI） | "飞杭州多少钱", "有什么酒店", "门票多少", "规划行程" |
-| [didi](skills/didi/) | 滴滴出行：打车估价、跳转 App 下单链接、订单与司机位置、取消订单（官方 MCP 的 CLI 封装） | "打车多少钱", "叫个车", "车到哪了", "取消订单" |
-| [amap](skills/amap/) | 高德地图查询：地理编码、POI 与周边、路径规划、距离、天气（Web 服务 API） | "从 A 到 B 多远", "附近有什么", "这个地址在哪", "明天天气" |
-| [baidupan](skills/baidupan/) | 百度网盘：账号信息、容量、列目录、搜索文件、取下载直链（开放平台 OAuth 2.0） | "百度网盘", "网盘空间", "找网盘里的文件", "下载直链" |
-| [mijia](skills/mijia/) | 米家智能家居：通过 Home Assistant 读状态、开关灯、执行场景（HA REST API） | "米家", "小爱", "把主卧灯关掉", "智能家居状态" |
-| [mail](skills/mail/) | 邮箱收发：IMAP 读信与检索、SMTP 发信，多账号（QQ / 163 / Gmail） | "查邮件", "有没有新邮件", "发邮件", "找某封邮件" |
-| [memos](skills/memos/) | 凭据库读写：按服务存取密码 / Key / Token（Memos CLI 封装） | "存密码", "查某个服务的 Key", "凭据库" |
-| [cloudflare](skills/cloudflare/) | Cloudflare 管理：域名/DNS 增删改、缓存清理与任意 API 调用（零依赖脚本） | "Cloudflare", "加条 A 记录", "改 CNAME", "清缓存" |
-
 ## 📦 通用脚本
 
-| 目录 | 描述 |
+| 目录 | 说明 |
 |------|------|
-| [scripts/windows/wezterm/](scripts/windows/wezterm/) | Windows 下 WezTerm 的安装、配置重置、图片处理与缓存清理脚本 |
+| [scripts/windows/wezterm/](scripts/windows/wezterm/) | Windows 下 WezTerm 的一键安装、配置重置、图片粘贴处理与缓存清理。优先 `winget`，失败回退 GitHub MSI；覆盖配置前自动备份并只保留最近 5 份 |
+
+```powershell
+.\scripts\windows\wezterm\install-wezterm.bat
+```
+
+详见 [docs/windows-wezterm.md](docs/windows-wezterm.md)。
 
 ---
 
 ## 🏗️ 项目结构
 
-```
+```text
 auto-devnexus/
-├── scripts/                   # 通用自动化脚本
-│   └── windows/
-│       └── wezterm/
-│           ├── install-wezterm.bat
-│           ├── install-wezterm.ps1
-│           ├── cleanup-wezterm.bat
-│           ├── cleanup-wezterm.ps1
-│           ├── wezterm-img-handler.ps1
-│           └── templates/
-│               └── wezterm.lua
-├── skills/                    # Skill 集合目录
-│   ├── gitnexus-setup/       # GitNexus 环境初始化 Skill
-│   │   ├── SKILL.md          # Skill 定义文件（AI 调用入口）
-│   │   ├── README.md         # Skill 说明文档
-│   │   ├── Reference.md      # 参考资料
-│   │   └── scripts/
-│   │       └── gitnexus-setup.sh
-│   ├── gitnexus-wiki/        # GitNexus Wiki 生成器 Skill
-│   │   ├── SKILL.md
-│   │   ├── README.md
-│   │   ├── Reference.md
-│   │   └── scripts/
-│   │       └── gitnexus-wiki.sh
-│   └── jira-integration/     # Jira 集成 Skill
-│       ├── SKILL.md          # Skill 定义文件
-│       ├── MEMORY.md         # 多层认知记忆系统
-│       └── scripts_py/       # Python 脚本目录
-│           ├── auth.py       # 身份认证
-│           ├── create.py     # 创建工单
-│           ├── delete.py     # 删除工单
-│           ├── get_issue.py  # 获取工单详情
-│           ├── schema.py     # 获取工单 schema
-│           ├── search.py     # 查询工单
-│           ├── transition.py # 工单状态流转
-│           ├── update.py     # 更新工单
-│           └── utils.py      # 工具函数
-│   ├── repo-parser/          # 仓库解析 Skill
-│       ├── SKILL.md          # Skill 定义文件
-│       ├── README.md         # Skill 说明文档
-│       └── scripts/
-│           ├── parse_github.py      # GitHub 仓库解析
-│           ├── parse_local_git.py   # 私有仓库解析
-│           └── repo_common.py       # 共用模块（凭证管理、解析逻辑）
-│   └── open-source-docs/     # 开源项目文档建设 Skill
-│       ├── SKILL.md          # Skill 定义文件
-│       ├── README.md         # Skill 说明文档
-│       └── Reference.md      # 文档方法论、模板与检查清单
-├── docs/                      # 项目文档
-├── .github/                   # GitHub 配置
-│   └── workflows/            # CI/CD 工作流
-├── LICENSE                    # MIT 许可证
-├── CONTRIBUTING.md           # 贡献指南
-├── CODE_OF_CONDUCT.md       # 行为准则
-└── README.md                 # 本文件
+├── skills/                     # 22 个 Skill，每个都是 SKILL.md 加可选 scripts/ 的自包含目录
+│   ├── gitnexus-setup/         # 代码图谱：环境初始化
+│   ├── gitnexus-wiki/          # 代码图谱：架构 Wiki 生成
+│   ├── codebase-memory-mcp-setup/  # CBM 安装与维护
+│   ├── jira-integration/       # Jira 工单（scripts_py/）
+│   ├── repo-parser/            # 仓库源码解析（scripts/）
+│   ├── dev-test/               # 测试路由入口加 8 个子手册 AGENT.md
+│   ├── cdp-control/            # Chromium 界面驱动与取证（references/ 附协议速查）
+│   ├── open-source-docs/       # 文档建设方法论（Reference.md 附模板与检查清单）
+│   ├── frontend-ui-ux/         # 前端与设计系统（references/ 共 9 篇）
+│   ├── image-generation/       # 图像生成（config.toml 声明模型）
+│   ├── web-search/             # 四路并行搜索（.env 配置各源 Key）
+│   ├── my-coffee/  kuaidi100/  didi/                 # 官方 MCP 转本地 CLI 封装
+│   ├── fliggy/  memos/                               # 官方 CLI 封装
+│   ├── rails/  amap/  baidupan/  mijia/  mail/  cloudflare/   # 官网链路 / REST / IMAP
+│   └── ...                     # 每个目录内的 SKILL.md 是唯一权威说明
+├── scripts/windows/wezterm/    # 通用 Windows 自动化脚本
+├── docs/                       # 文档中心（索引见 docs/README.md）
+├── .github/                    # Issue 模板、PR 模板、CI
+├── CONTRIBUTING.md             # 贡献指南
+├── CODE_OF_CONDUCT.md          # 行为准则
+└── LICENSE                     # MIT
 ```
 
 ---
 
-## 🛠️ 开发
+## 📖 文档导航
+
+| 文档 | 内容 |
+|------|------|
+| [docs/README.md](docs/README.md) | 文档中心索引，按「入门 / 接入 / 规范 / 排障」分流 |
+| [docs/getting-started.md](docs/getting-started.md) | 从零到第一次成功调用：环境检查、安装、两种调用方式、常见故障 |
+| [docs/local-services.md](docs/local-services.md) | 11 个本地服务接入的申请入口、凭据配置、命令速查与能力边界 |
+| [docs/skill-specification.md](docs/skill-specification.md) | Skill 的目录结构、`SKILL.md` 字段规范、脚本与输出约定 |
+| [docs/windows-wezterm.md](docs/windows-wezterm.md) | WezTerm 一键安装脚本的目录位置、生成文件与备份策略 |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | 分支、提交、PR 与新增 Skill 的流程 |
+
+---
+
+## 🛠️ 开发与贡献
 
 ### 添加新 Skill
 
-1. 在 `skills/` 目录下创建新目录
-2. 按照 [Skill 开发规范](CONTRIBUTING.md#skill-开发规范) 创建必要文件
-3. 更新本 README 的 Skill 目录表格
-4. 提交 Pull Request
+1. 在 `skills/` 下新建目录，名称用小写短横线（如 `my-skill`）
+2. 按 [docs/skill-specification.md](docs/skill-specification.md) 编写 `SKILL.md` 与 `scripts/`
+3. 脚本优先用 Python 标准库；确需第三方依赖时在 `SKILL.md` 中写清安装命令
+4. 凭据一律走环境变量或用户目录，并在根 `.gitignore` 补对应规则
+5. 更新 [README 的能力一览](#-能力一览) 与 [docs/local-services.md](docs/local-services.md)（接入类）
+6. 提交 Pull Request，CI 会做基础校验
 
-详细规范请参考 [CONTRIBUTING.md](CONTRIBUTING.md)。
+详细流程见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
----
+### 贡献
 
-## 🤝 贡献
-
-我们欢迎所有形式的贡献！
-
-- 🐛 报告 Bug
-- 💡 建议新功能
-- 📝 改进文档
-- 🔧 提交代码
-
-请参考 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详细指南。
+欢迎一切形式的贡献：报告 Bug、建议新功能、改进文档、提交代码。
 
 ---
 
@@ -333,9 +295,9 @@ auto-devnexus/
 
 ## 🙏 致谢
 
-- [GitNexus](https://github.com/abhigyanpatwari/GitNexus) - 提供强大的代码图谱分析能力
-- [Claude Code](https://github.com/anthropics/claude-code) - AI 编程助手
-- [OpenCode](https://github.com/opencode-ai/opencode) - 开源 AI 编程助手
+- [GitNexus](https://github.com/abhigyanpatwari/GitNexus) — 代码图谱分析能力
+- [Claude Code](https://github.com/anthropics/claude-code) — AI 编程助手
+- [OpenCode](https://github.com/opencode-ai/opencode) — 开源 AI 编程助手
 
 ---
 
