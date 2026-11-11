@@ -1,6 +1,6 @@
 ---
 name: frontend-ui-ux
-description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端架构、Awwwards 级高阶微动效（GSAP & Motion）、视觉 Token 硬刻度、高转化落地页（结构/文案/转化/SEO-AEO）、设计转动态展演（保真重建 + 故事循环 + MP4-GIF 导出）、企业级设计系统、既有系统审计重构、像素级 Image-to-Code 还原、Web/App 视觉原型分段生图及品牌全案系统（Brandkit）。严格杜绝 AI 模板化廉价感与反模式。
+description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端架构、Awwwards 级高阶微动效（GSAP & Motion）、视觉 Token 硬刻度、高转化落地页（结构/文案/转化/SEO-AEO）、设计转动态展演（保真重建 + 故事循环 + MP4-GIF 导出）、企业级设计系统、既有系统审计重构、像素级 Image-to-Code 还原、Web/App 视觉原型分段生图、品牌全案系统（Brandkit）、标志设计系统（Logo 与 SVG 工艺）、示意产品界面与展演（Stageshow 方法论）、手绘插画与编号化生图提示词。严格杜绝 AI 模板化廉价感与反模式。
 ---
 
 # 🎨 专家级一体化前端与 UI/UX 架构系统 (Frontend UI/UX Master Protocol)
@@ -13,6 +13,7 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 - **拒绝模板化与平庸 (Anti-Slop & Anti-Generic)**：坚决摒弃 AI 默认的“紫色渐变、三等分卡片、居中无聊英雄区、满屏破折号、假数据堆砌”。每一个界面都必须具备独特的视觉记忆点与明确的设计主张。
 - **真实工程交付**：产出的代码必须具备生产级稳健性（严格无障碍 a11y、响应式无缝适配、GPU 硬件加速优化、完善的交互状态机）。
 - **意图先行与情境自适应**：在写任何代码或生成任何视觉资产前，先精准推导用户场景、受众与核心诉求，自适应选择最贴合的设计系统与审美范式。
+- **规则叠加有上限 (Rule Stacking Discipline)**：一个底座规范加一个品味纠偏就够，塞进三四套互相冲突的设计规则只会让产出自相矛盾。同一时间只允许一个模式主导，其余模块只做校验，不提供第二套主张。
 
 ---
 
@@ -41,7 +42,9 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
   ├── 模式 E: 品牌全案系统 (Brandkit Identity) ───► 策略推导 + 5大构型 + 3x3/2x3 展板
   ├── 模式 F: 语义设计系统 (Stitch DESIGN.md) ────► 语义化设计规范文件生成
   ├── 模式 G: 高转化落地页 (Landing Page) ────────► 需求采集 + 结构/文案/转化 + SEO/AEO
-  └── 模式 H: 设计转动态展演 (Design-to-Motion) ──► 保真重建 + 故事循环 + 确定性录制导出
+  ├── 模式 H: 设计转动态展演 (Design-to-Motion) ──► 保真重建 + 故事循环 + 确定性录制导出
+  ├── 模式 I: 标志设计 (Logo & Mark) ────────────► 需求 Brief + 三概念 + SVG 工艺 + 测试清单 + 变体导出
+  └── 模式 J: 示意产品界面 (Faux Product UI) ─────► 单事件静帧或动画 + 裁切构图 + 彩排自检
 ```
 
 ### 模式 A: 从零构建 (Greenfield Web/App)
@@ -66,6 +69,7 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 ### 模式 D: 视觉原型生图 (UI ImageGen)
 1. **Web 分段硬规则**：**1 Section = 1 张独立横屏图 (16:9 / 16:10)**。严禁将多 Section 压缩为一张长图（详见 `references/image-generation-prompts.md`）。
 2. **Mobile 原型流规则**：默认置于精致手机真机框架（Phone Mockup）内，保障多 Screen 间色彩、字体与组件的严格一致性。
+3. **插画类资产走编号化提示词**：文章封面、海报、组图、信息图、漫画分镜、IP 与电商图，用画风编号加版式编号加主题色的方法构建中英双语提示词；主题逐字保留，垫图必须追加隔离或重绘指令，提示词正文禁止出现任何编号。见 `references/handdrawn-style-prompting.md`。
 
 ### 模式 E: 品牌全案系统 (Brandkit)
 1. **品牌策略推导**：提炼品类、受众、情感承诺与核心隐喻（Metaphor）。
@@ -93,6 +97,24 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 5. **故事是主角**：每个视觉先写一句话故事（图表被读取、列表收到新条目、提示词被敲入），起止必须落回精确设计。只载入不演戏视为未完成。
 6. **确定性录制**：禁用实时录屏，用假时钟逐帧步进截图，接缝与空拍对齐后再用 ffmpeg 编三件套（MP4 / 网页 GIF / 800×500 GIF）。
 7. **自检闭环**：溢出、接缝、空拍、回位、联系表五项全过才交付，逐项细节见 `references/design-to-motion-showcase.md` 第 16 节。
+
+### 模式 I: 标志设计 (Logo & Mark)
+1. **先做 Brief**：名称拼写、业务、受众、3 到 5 个品牌形容词、竞品、硬约束。信息太少就走快速通道，一条消息最多问 5 个问题，或直接声明假设。
+2. **列陈词滥调再避开**：显式写出品类的滥俗符号并默认禁用，至少探索两种不同的标志类型。
+3. **一句话概念**：先写 8 到 12 个一句话概念，快速打分后只构建最强且最不同的三个。一句能套到竞品身上的话不算概念。
+4. **先黑后彩的 SVG**：纯黑白底构建，锚点少，角度只用 0/15/30/45/60/90°，负空间用 `fill-rule="evenodd"`，成品禁用 `<text>`。
+5. **渲染再看**：`scripts/logo/render_png.py` 出 PNG 亲眼检查，`svg_audit.py` 体检，`preview_sheet.py` 出测试页，至少循环两轮。
+6. **概念检查点停下**：先给灰度概念总览加一句推荐，问要不要做完整套件，用户点头才继续，套件是大部分工作量。
+7. **套件与变体**：定稿几何 → 1 到 2 色且单色版仍成立 → 字体与组合锁定 → 行业样机展示板 → `export_variants.py` 导出黑白单色、横竖组合、favicon 与 App 图标 → 一页使用规范。测试清单逐项过，细节见 `references/logo-design-system.md`。
+
+### 模式 J: 示意产品界面 (Faux Product UI / Stageshow)
+1. **先写计划再写代码**：位置与尺寸、焦点对象、发生的那一件事、回报、可以删掉的东西。质量大半在这一步定了。
+2. **选外观与保真度**：主题（浅色/暗色/蓝图/玻璃）、配色、保真度（全占位条 / 有意义处用真词 / 处处真实）。有产品代码就把它的 token 映射过来。
+3. **三到五个节拍**：10 到 16 秒，每段光标移动都要能解释，数据不得无原因回退。故事更丰富与画面更安静冲突时选画面。
+4. **从最接近的范例起步**：整体复制结构再替换成 Brief 的产品，不要看一眼就重写。
+5. **词预算是词不是元素**：真字符串 3 到 7 个，占位条只放边缘，眼睛落点上必须是真内容。
+6. **裁切即构图**：窗口至少占舞台三分之二并跑出至少一条边，不垫底板、不四边留白、不留死角和近切线。
+7. **彩排验收**：先定海报帧，再录整段循环逐帧看，按裁切 → 层级 → 动作 → 打磨的顺序修最大缺陷。规则细节与复发缺陷清单见 `references/faux-product-ui-stageshow.md`。
 
 ---
 
@@ -154,6 +176,9 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 - **`references/visual-system-tokens.md`**：字体白名单、字阶与间距刻度表、嵌套圆角公式、边框与暗色底规范、英雄区排版、图标库白名单。
 - **`references/landing-page-system.md`**：落地页需求采集、页结构、版式选型、转化文案、SEO/AEO、内容真实性、状态矩阵、上线必备清单与标语揭示区。
 - **`references/design-to-motion-showcase.md`**：设计稿保真重建、图层导出、载入编排、故事循环、循环周期、PSNR 自检与 MP4/GIF 确定性导出。
+- **`references/logo-design-system.md`**：标志设计的七阶段流程、标志类型选型、SVG 构建规则、十二条原则、红旗清单、测试清单与 `scripts/logo/` 脚本用法。
+- **`references/faux-product-ui-stageshow.md`**：示意产品界面的核心想法与五种失败、七步工作流、静帧工艺规则（克制/文字/间距/图标/色彩/设备）、复发缺陷清单与自实现映射。
+- **`references/handdrawn-style-prompting.md`**：手绘插画的编号化选型（画风/版式/主题色）、纯图与图文双模式、自动推荐禁令、参考图隔离与改图重绘指令、中英双提示词规范。
 
 ---
 
@@ -180,6 +205,8 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 - [ ] **内容真实**：是否使用真实文案与可信人名品牌、非整数数据，零占位拉丁文与空话？
 - [ ] **落地页专检**（仅落地页）：是否单一主张单一 CTA、标语揭示区在场、SEO 与 AEO、法务与元数据齐备？
 - [ ] **展演专检**（仅展演）：静帧是否过 PSNR、故事是否回落原设计、接缝与空拍是否闭合、导出是否确定性？
+- [ ] **标志专检**（仅标志）：16 px 是否可认、单色与反白是否成立、角度是否精确、有无活文字或位图、字母测试与接缝检查是否过、`svg_audit` 是否 90 分以上且无 FAIL？
+- [ ] **示意界面专检**（仅示意界面）：真字符串是否控制在 3 到 7 个、窗口是否占比达标并出血、占位条是否只在边缘、图标是否来自图标集、海报帧能否独立讲故事？
 
 ---
 
@@ -194,5 +221,8 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 | [emilkowalski/skills](https://github.com/emilkowalski/skills) | 只动廉价属性、控制 blur 半径、对象禁从零生长、reduced-motion 降级 | MIT |
 | [Owl-Listener/designer-skills](https://github.com/Owl-Listener/designer-skills) | 骨架屏贴合真实内容、错峰入场 | MIT |
 | [dylantarre/animation-principles](https://github.com/dylantarre/animation-principles) | 同级循环错峰、末帧与首帧衔接 | MIT |
+| [kaankiziltug/logo-design-skill](https://github.com/kaankiziltug/logo-design-skill) by kaankiziltug | 标志设计七阶段流程、SVG 构建与光学校正、测试清单、标志变体与 Web 图标导出脚本 | MIT |
+| [benjitaylor/skills · stageshow](https://github.com/benjitaylor/skills) by Benji Taylor | 示意产品界面的静帧工艺、裁切规则、故事节拍与彩排自检方法（套件与范例未收录，仅提炼方法） | MIT，app-icons 与品牌素材不在其内 |
+| [yang0/handraw-style](https://github.com/yang0/handraw-style) by yang0 | 编号化画风与版式选型、纯图与图文双模式、参考图隔离与改图重绘指令（图库未收录） | MIT 附加署名要求 |
 
 上游原文可整体替换其自身文档，但在本仓库内以其规范语义为准；文本与本文档铁律冲突时，以本文档为准。
