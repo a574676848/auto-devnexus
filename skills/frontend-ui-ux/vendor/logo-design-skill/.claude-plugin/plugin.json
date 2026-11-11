@@ -1,0 +1,13 @@
+{
+  "name": "logo-design",
+  "description": "Design, critique and deliver professional logos: brief, concepts, geometric SVG construction, optical refinement, colour, typography, testing, presentation and brand guidelines — with a searchable library of 1,400+ classified SVG logos.",
+  "version": "1.4.5",
+  "author": {
+    "name": "kaankiziltug",
+    "url": "https://github.com/kaankiziltug"
+  },
+  "homepage": "https://github.com/kaankiziltug/logo-design-skill",
+  "repository": "https://github.com/kaankiziltug/logo-design-skill",
+  "license": "MIT",
+  "keywords": ["logo", "branding", "identity", "svg", "design"]
+}

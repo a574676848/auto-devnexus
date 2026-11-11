@@ -28,6 +28,12 @@ skills/mail/accounts.json
 skills/fliggy/config.json
 skills/rails/stations.js
 
+# frontend-ui-ux vendor：上游原样收录，只排除依赖与构建产物
+skills/frontend-ui-ux/vendor/stageshow/node_modules/
+skills/frontend-ui-ux/vendor/stageshow/dist/
+skills/frontend-ui-ux/vendor/stageshow/playground/dist/
+skills/frontend-ui-ux/vendor/**/__pycache__/
+
 # Python 编译产物
 __pycache__/
 *.pyc

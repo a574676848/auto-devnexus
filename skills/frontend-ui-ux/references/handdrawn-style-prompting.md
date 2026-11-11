@@ -136,13 +136,26 @@ English：
 ## 7. 上游安装与许可
 
 ```bash
-git clone https://github.com/yang0/handraw-style
-# 上游含 370 种画风的图鉴、170 种版式模板、36 色图鉴与遴选脚本
+cd vendor/handraw-style
 ```
 
-许可为 MIT **附加署名要求**：使用、修改、分发、商业化都允许，但必须在文档、仓库、产品说明或界面中保留并清楚显示原作者 **yang0** 与仓库链接 `https://github.com/yang0/handraw-style`。本文件开头已作声明，二次分发时不要删除。
+**图鉴与脚本已随技能完整收录**：`vendor/handraw-style/` 含 370 种画风图鉴 `STYLES.md`、170 种版式图鉴 `LAYOUTS.md`、36 色图鉴 `COLORS.md`、672 张 webp 预览、170 份版式提示词模板，以及 `skills/handdraw-style-prompter/` 下的 `references/*.json`（styles / layouts / colors / model_capabilities）、18 个脚本与三套图册 HTML。
 
-本仓库不收录上游 `images/`、`STYLES.md`、`LAYOUTS.md` 等大体积图库（合计数百 MB），只保留方法与规范；需要具体编号的样图与模板时按上面命令取上游。
+```bash
+P=vendor/handraw-style/skills/handdraw-style-prompter
+python $P/scripts/prompt_style.py --style 18 --theme "秋天的第一杯奶茶"
+python $P/scripts/prompt_style.py --layout SC-001 --style 18 --color C-15 --theme "…"
+python $P/scripts/prompt_style.py --auto --theme "…" --mode graphic-text
+python $P/scripts/resolve_reference.py --model gpt-image-2 --style 18
+```
+
+合法性校验：`--style` 取 1 到 370、`--layout` 取 `SC/IG/SB/IP/EC-###`、`--color` 取 `C-01` 到 `C-36`，权威清单在 `$P/references/styles.json`、`layouts.json`、`colors.json`，人眼挑编号直接开图册更快。
+
+Windows 控制台先 `chcp 65001`；`prompt_style.py` 已打 Windows UTF-8 输出补丁（`vendor/README.md` 注明），不打补丁时 `--auto` 会在推荐行抛 `UnicodeEncodeError`。
+
+**图册浏览**：直接用浏览器打开 `$P/gallery/index.html`（画风缩略图墙）、`layouts.html`（版式）、`colors.html`（配色），比在 Markdown 里翻编号快得多。重建图册需 `pip install -r vendor/handraw-style/requirements.txt`（Pillow、PyYAML），只在图库维护时需要。
+
+许可为 MIT **附加署名要求**：使用、修改、分发、商业化都允许，但必须在文档、仓库、产品说明或界面中保留并清楚显示原作者 **yang0** 与仓库链接 `https://github.com/yang0/handraw-style`。本文件开头已作声明，二次分发时不要删除。
 
 ---
 

@@ -179,12 +179,25 @@
 
 ## 6. 在本技能里怎么落地
 
-**默认不用套件，直接写 React + CSS 复现这套规则**。上游的 React 套件（`kit/`，含舞台、窗口、手机、气泡、图表、光标等组件）与 30 多个黄金范例是取之不尽的参考，但体积大、依赖 `react-dom` 与 `lucide-react`，不适合塞进本技能。需要原样调用时按上游安装：
+**套件与范例已随技能完整收录**，不再需要从上游安装。位置：`vendor/stageshow/`（`kit/` 155 个文件、`examples/` 155 个文件、`playground/` 预览、`references/` 15 份细则、`scripts/film.mjs`）。目录说明见 `vendor/README.md`。
 
 ```bash
-npx skills add benjitaylor/skills --skill stageshow
-# 或在本地克隆后 npm install && npm run dev 打开 examples 预览
-git clone https://github.com/benjitaylor/skills
+cd vendor/stageshow
+npm install        # 首次；node_modules 不入库
+npm run dev        # Windows 打开打印出的 http://127.0.0.1:5173
+npm run typecheck  # 已实测通过
+npm run build      # 已实测通过，产物在 dist/，不入库
+```
+
+**两种用法，按任务选一种**
+
+1. **要原汁原味的效果**：直接把 `examples/` 里最接近的目录（连 `kit/` 一起）拷进目标项目，保留它的舞台尺寸、裁切、行高、脚本节拍，只替换成 Brief 的 token、图标与文案。这是上游推荐的路径，也是最快达到同等质量的路径。
+2. **只要规范不要依赖**：按下面的映射表用 React + CSS 自建骨架，再回头对照 `vendor/stageshow/references/craft.md` 与 `framing.md` 逐条自查。
+
+**录制**（需要本机 Chrome，`film.mjs` 走 `playwright-core`）：
+
+```bash
+node scripts/film.mjs "http://127.0.0.1:5173/?capture=hero-demo" --select '#example' --still --out gold.png
 ```
 
 **自行实现时的最小映射**

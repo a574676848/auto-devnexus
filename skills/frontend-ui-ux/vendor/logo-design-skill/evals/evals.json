@@ -1,0 +1,25 @@
+{
+  "skill_name": "logo-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a logo for Kiln, a small-batch specialty coffee roaster in Istanbul. It should feel warm, crafted and modern — not rustic cliché. It needs to work on coffee bags, paper cups and as an Instagram avatar. Give me three directions and your recommendation.",
+      "expected_output": "A short brief with stated assumptions and three distinct concepts (different mark types) built as clean SVG without live text, audited and tested at small sizes, shown as ONE concept overview image with a one-line idea each and a recommendation — then the skill stops and offers the full kit instead of producing it.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm launching Tidepool, an open-source log search tool for developers. I need a logo I can use in the README, as a favicon and as an app icon. Keep it simple and technical but friendly.",
+      "expected_output": "Three concepts shown as a concept overview image with a recommendation, followed by an offer to build the kit (favicon, app icon, variants, usage notes). Only after the user says yes: exported favicon/app-icon/web-icon set, one-colour black/white variants and short usage notes for the chosen direction.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Here's our logo (logo.svg). Be honest: what's wrong with it, and how would you refresh it without losing recognition?",
+      "expected_output": "A structured critique with scorecard and top-3 prioritised fixes, an equity audit, and an evolutionary refresh proposal (optionally a revised SVG).",
+      "files": [
+        "logo.svg"
+      ]
+    }
+  ]
+}

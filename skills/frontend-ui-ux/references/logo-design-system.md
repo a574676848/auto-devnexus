@@ -32,7 +32,9 @@
 写一份短 Brief 并列出假设。**形容词是最有价值的输入**，它们会直接转成视觉线索。
 
 ### 阶段 2：调研与策略
-1. 看清品类长什么样，目的是避免泯然众人。
+1. 看清品类长什么样，目的是避免泯然众人。真实参考库随技能收录，直接查：
+   `python vendor/logo-design-skill/skills/logo-design/scripts/search_library.py --industry developer-tools --summary`
+   行业值写错不报错但会 0 命中，取值见 `vendor/README.md`；查完挑 3 到 5 个文件真正读一遍它们的 SVG 构造。
 2. **显式列出品类陈词滥调**并默认禁用（金融科技：蓝色、上升箭头、盾牌、地球；咖啡：豆子、热气、杯子），除非给出真正新鲜的形式。
 3. **词语地图**：名称、产品、形容词、承诺 → 名词、隐喻、反义词，圈出交集。
 4. 选候选标志类型（第 3 节），至少探索两种不同类型。
@@ -41,6 +43,7 @@
 - 写 **8 到 12 个一句话概念**，分布在不同类型上。每个都要有可拥有的转折；一句能套到竞品身上的话不算概念。
 - 快速打分（想法清晰度、区分度、简洁度、相关性、小尺寸强度），选出**最强且彼此最不同的三个**。
 - 一句话便宜，构建昂贵：只构建这三个，不打磨会被丢掉的想法。
+- **动手前先查重**：`search_library.py --subject <事物>` 或 `--query <词>` 确认不是在复刻已有标志，再挑 3 到 5 个同技法范例研究几何怎么搭。
 
 ### 阶段 4：SVG 构建（先黑后彩）
 - 先用文字描述构造（基本形、半径、角度、网格单位），再写 SVG。符号画布 `viewBox="0 0 256 256"`，组合标高度保持 256、宽度随内容。
@@ -199,31 +202,47 @@
 
 ---
 
-## 8. 随附脚本 (`scripts/logo/`)
+## 8. 脚本与参考库
 
-纯 Python 3 标准库，无第三方依赖。Windows 上 `python3` 常是应用商店占位程序，一律用 `python`（或 `py -3`）。路径写全：`python <skill-dir>/scripts/logo/svg_audit.py logo.svg`。
+两处，各管一段：
+
+| 位置 | 内容 | 什么时候用 |
+| :--- | :--- | :--- |
+| `scripts/logo/` | 精简版 5 个脚本（`svglib`、`svg_audit`、`preview_sheet`、`render_png`、`export_variants`），无参考库也能跑 | 只做体检、测试页、变体导出 |
+| `vendor/logo-design-skill/skills/logo-design/` | 上游完整 9 个脚本 + 14 份参考文档 + 模板 + **1,432 个真实标志 SVG 库** | 查品类惯例、货架对比、概念总览图、客户提案展板 |
+
+两处都是纯 Python 3 标准库。Windows 上 `python3` 常是应用商店占位程序，一律用 `python`（或 `py -3`），路径写全。
 
 | 脚本 | 用途 |
 | :--- | :--- |
+| `search_library.py` | 按类型/技法/几何/行业/情绪/主色检索 1,432 个真实标志；`--summary` 看品类惯例，`--exemplary` 只取范例，`--format paths` 给文件路径，`--list-values` 列全部合法取值 |
+| `preview_sheet.py` | HTML 测试页：尺寸阶梯、16/32 px、多背景、单色、眯眼模糊、镜像旋转、favicon/App 图标/页头情境；`--refs` 指定竞品文件，`--refs-industry` 直接从库里拉同行业标志做货架对比 |
 | `svg_audit.py` | 结构体检：活文字、位图、滤镜、颜色数、渐变、描边、差一点的角度、微小细节、居中、复杂度，输出 0 到 100 分 |
-| `preview_sheet.py` | HTML 测试页：尺寸阶梯、16/32 px 像素测试、多背景、单色、眯眼模糊、镜像旋转、favicon/App 图标/页头/名片情境、并排对比、`--refs` 指定竞品文件做货架测试 |
-| `render_png.py` | SVG 渲染为透明 PNG（自动挑选 cairosvg / rsvg-convert / Inkscape / 无头 Chrome）；`--which` 列出可用渲染器；可截图 HTML 测试页、生成 `favicon.ico` |
-| `export_variants.py` | 黑、白、品牌单色、方形、favicon、App 图标 SVG；`--png` 导出尺寸；`--web-icons` 一次生成 favicon.ico + PNG 图标集 + webmanifest + `<head>` 片段；`--favicon-source` 指定小尺寸简化稿 |
-| `svglib.py` | 以上脚本共用的 SVG 解析与几何工具库，不单独调用 |
-
-常用命令：
+| `render_png.py` | SVG 渲染为透明 PNG（自动挑 cairosvg / rsvg-convert / Inkscape / 无头 Chrome）；`--which` 列出可用渲染器；可截图 HTML、生成 `favicon.ico` |
+| `export_variants.py` | 黑、白、品牌单色、方形、favicon、App 图标 SVG；`--png` 导出尺寸；`--web-icons` 生成 favicon.ico + PNG 图标集 + webmanifest + `<head>` 片段 |
+| `concept_sheet.py` | 概念总览单图：大图 + 64/32/16 px + 名称 + 一句话 + 推荐，检查点专用 |
+| `presentation_board.py` | 客户提案展板：Brief、每案配 6 个行业样机、对比、推荐；`--png-dir` 每页导 PNG |
+| `build_catalog.py` / `svglib.py` | 维护者工具 / 公共库，不直接调用 |
 
 ```bash
-python scripts/logo/render_png.py concept-a.svg concept-b.svg --out-dir renders --size 512
-python scripts/logo/svg_audit.py concept-a.svg concept-b.svg concept-c.svg
-python scripts/logo/preview_sheet.py concept-a.svg concept-b.svg concept-c.svg -o preview.html
-python scripts/logo/export_variants.py final-symbol.svg --title "Brand logo" --mono "#HEX" --icon-bg "#HEX" --web-icons --favicon-source final-symbol-small.svg
-python scripts/logo/export_variants.py final-horizontal.svg --title "Brand logo" --only black white mono --mono "#HEX" --png 1200
+# 先设一次，后文简写；PowerShell 里把 $S 换成完整路径逐条写
+S=vendor/logo-design-skill/skills/logo-design/scripts
+python $S/search_library.py --list-values
+python $S/search_library.py --industry developer-tools --summary
+python $S/svg_audit.py concept-a.svg concept-b.svg concept-c.svg
+python $S/preview_sheet.py concept-a.svg concept-b.svg concept-c.svg --refs-industry ai-ml -o preview.html
+python $S/render_png.py concept-a.svg concept-b.svg --out-dir renders --size 512
+python $S/concept_sheet.py a-symbol.svg b-symbol.svg c-symbol.svg --names "A" "B" "C" --notes "…" "…" "…" --recommend 1 --greyscale -o concepts.png
+python $S/presentation_board.py spec.json -o board.html --png-dir slides
+python $S/export_variants.py final-symbol.svg --title "Brand logo" --mono "#HEX" --icon-bg "#HEX" --web-icons --favicon-source final-symbol-small.svg
+python $S/export_variants.py final-horizontal.svg --title "Brand logo" --only black white mono --mono "#HEX" --png 1200
 ```
 
-渲染出的 PNG 必须用读图工具亲眼看；确实无法渲染时如实说明，并把几何保持得格外简单明确。
+精简版把 `$S` 换成 `scripts/logo` 即可。
 
-**本仓库未收录的上游部分**：约 1,500 个真实标志 SVG 参考库及依赖它的 `search_library.py`、`build_catalog.py`、`preview_sheet.py --refs-industry`；`presentation_board.py`（行业样机展示板）与 `concept_sheet.py`（概念总览单图，本机 Chrome 截图路径实测卡死）。需要时从上游整包安装：`git clone https://github.com/kaankiziltug/logo-design-skill`。没有参考库时，品类调研与「不撞已有标志」检查改用 web 搜索与自身品类知识完成；概念总览改用 `preview_sheet.py` 的并排视图截图。
+**实测口径**：`search_library`、`--summary`、`preview_sheet --refs-industry`、`svg_audit`、`export_variants` 在本机均正常；`concept_sheet` 的 SVG 一定会写出，但 PNG 依赖 Chrome 截图，本机实测两分钟内不返回，此时先看 SVG，或用浏览器打开 `preview_sheet` 的并排视图替代。`--refs-industry` 传错行业值不报错，只会 0 命中，合法取值见 `vendor/README.md`。
+
+渲染出的 PNG 必须用读图工具亲眼看；确实无法渲染时如实说明，并把几何保持得格外简单明确。
 
 ---
 

@@ -69,7 +69,7 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 ### 模式 D: 视觉原型生图 (UI ImageGen)
 1. **Web 分段硬规则**：**1 Section = 1 张独立横屏图 (16:9 / 16:10)**。严禁将多 Section 压缩为一张长图（详见 `references/image-generation-prompts.md`）。
 2. **Mobile 原型流规则**：默认置于精致手机真机框架（Phone Mockup）内，保障多 Screen 间色彩、字体与组件的严格一致性。
-3. **插画类资产走编号化提示词**：文章封面、海报、组图、信息图、漫画分镜、IP 与电商图，用画风编号加版式编号加主题色的方法构建中英双语提示词；主题逐字保留，垫图必须追加隔离或重绘指令，提示词正文禁止出现任何编号。见 `references/handdrawn-style-prompting.md`。
+3. **插画类资产走编号化提示词**：文章封面、海报、组图、信息图、漫画分镜、IP 与电商图，用画风编号加版式编号加主题色的方法构建中英双语提示词；主题逐字保留，垫图必须追加隔离或重绘指令，提示词正文禁止出现任何编号。图鉴与脚本已收录在 `vendor/handraw-style/`：先开 `skills/handdraw-style-prompter/gallery/index.html` 挑画风，再跑 `scripts/prompt_style.py`。见 `references/handdrawn-style-prompting.md`。
 
 ### 模式 E: 品牌全案系统 (Brandkit)
 1. **品牌策略推导**：提炼品类、受众、情感承诺与核心隐喻（Metaphor）。
@@ -103,15 +103,15 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 2. **列陈词滥调再避开**：显式写出品类的滥俗符号并默认禁用，至少探索两种不同的标志类型。
 3. **一句话概念**：先写 8 到 12 个一句话概念，快速打分后只构建最强且最不同的三个。一句能套到竞品身上的话不算概念。
 4. **先黑后彩的 SVG**：纯黑白底构建，锚点少，角度只用 0/15/30/45/60/90°，负空间用 `fill-rule="evenodd"`，成品禁用 `<text>`。
-5. **渲染再看**：`scripts/logo/render_png.py` 出 PNG 亲眼检查，`svg_audit.py` 体检，`preview_sheet.py` 出测试页，至少循环两轮。
+5. **调研与渲染都要真跑**：`vendor/logo-design-skill/skills/logo-design/scripts/search_library.py --industry <行业> --summary` 摸品类惯例，`svg_audit.py` 体检，`preview_sheet.py --refs-industry` 出测试页做货架对比，`render_png.py` 出 PNG 亲眼检查，至少循环两轮。
 6. **概念检查点停下**：先给灰度概念总览加一句推荐，问要不要做完整套件，用户点头才继续，套件是大部分工作量。
-7. **套件与变体**：定稿几何 → 1 到 2 色且单色版仍成立 → 字体与组合锁定 → 行业样机展示板 → `export_variants.py` 导出黑白单色、横竖组合、favicon 与 App 图标 → 一页使用规范。测试清单逐项过，细节见 `references/logo-design-system.md`。
+7. **套件与变体**：定稿几何 → 1 到 2 色且单色版仍成立 → 字体与组合锁定 → `presentation_board.py` 出行业样机展示板 → `export_variants.py` 导出黑白单色、横竖组合、favicon 与 App 图标 → 一页使用规范。测试清单逐项过，细节见 `references/logo-design-system.md`。
 
 ### 模式 J: 示意产品界面 (Faux Product UI / Stageshow)
 1. **先写计划再写代码**：位置与尺寸、焦点对象、发生的那一件事、回报、可以删掉的东西。质量大半在这一步定了。
 2. **选外观与保真度**：主题（浅色/暗色/蓝图/玻璃）、配色、保真度（全占位条 / 有意义处用真词 / 处处真实）。有产品代码就把它的 token 映射过来。
 3. **三到五个节拍**：10 到 16 秒，每段光标移动都要能解释，数据不得无原因回退。故事更丰富与画面更安静冲突时选画面。
-4. **从最接近的范例起步**：整体复制结构再替换成 Brief 的产品，不要看一眼就重写。
+4. **从最接近的范例起步**：在 `vendor/stageshow/examples/` 里挑最接近的目录，连 `kit/` 一起整体复制结构，再替换成 Brief 的产品，不要看一眼就重写。预览与录制见 `references/faux-product-ui-stageshow.md` 第 6 节。
 5. **词预算是词不是元素**：真字符串 3 到 7 个，占位条只放边缘，眼睛落点上必须是真内容。
 6. **裁切即构图**：窗口至少占舞台三分之二并跑出至少一条边，不垫底板、不四边留白、不留死角和近切线。
 7. **彩排验收**：先定海报帧，再录整段循环逐帧看，按裁切 → 层级 → 动作 → 打磨的顺序修最大缺陷。规则细节与复发缺陷清单见 `references/faux-product-ui-stageshow.md`。
@@ -179,6 +179,7 @@ description: 专家级一体化前端与 UI/UX 技能系统。融合全栈前端
 - **`references/logo-design-system.md`**：标志设计的七阶段流程、标志类型选型、SVG 构建规则、十二条原则、红旗清单、测试清单与 `scripts/logo/` 脚本用法。
 - **`references/faux-product-ui-stageshow.md`**：示意产品界面的核心想法与五种失败、七步工作流、静帧工艺规则（克制/文字/间距/图标/色彩/设备）、复发缺陷清单与自实现映射。
 - **`references/handdrawn-style-prompting.md`**：手绘插画的编号化选型（画风/版式/主题色）、纯图与图文双模式、自动推荐禁令、参考图隔离与改图重绘指令、中英双提示词规范。
+- **`vendor/README.md`**：三个上游资产的目录说明、可用参数取值、运行命令、许可与升级方式（`vendor/` 下是原样收录的参考库、React 套件与画风图鉴，不是文档）。
 
 ---
 
