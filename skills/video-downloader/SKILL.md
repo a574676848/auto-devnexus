@@ -146,7 +146,7 @@ The supplied API key is never written to the repository, upload plan, metadata, 
 
 - a reachable HTTP(S) link (platform direct URL, `item['public_url']`) is passed through unchanged;
 - a local clip up to 10 MB is inlined as a `data:video/mp4;base64,...` URL;
-- a larger local clip is never uploaded to any third-party storage: that item is reported as an error and the pipeline falls back to local frame sampling, so its evidence becomes `video-frame` instead of `native-video`;
+- a larger local clip is published to the configured OSS bucket as one `public-read` object with a random UUID name, analysed from that plain object URL, and deleted in a `finally` block the moment the request finishes; when publishing is not configured or fails, the clip falls back to local frame sampling;
 - `doubao` and `tokenrhythm` are frame-only by design.
 
 Native results carry `evidence_kind: native-video` and relative-millisecond timestamps that are re-based onto the source timeline by the same parser used for Ark's native-video responses.
@@ -493,7 +493,7 @@ Do not infer completion from file presence alone. Check overall `status`, `asr.s
 - Temporary signed video URLs, raw WeChat API profiles, cookies, Bearer tokens, and API keys are excluded from public artifacts.
 - Depending on the chosen mode and backend, keyframes, a compressed video proxy, timestamped transcript/caption/scene timestamps, or selected clips are sent to Aliyun Bailian, Volcano Ark, or TokenRhythm only after interactive confirmation or the non-interactive run's up-front `--confirm-cloud-upload` authorization. Agent mode has two separately previewed provider stages in interactive use; the automation flag pre-authorizes both. Use `--vision-plan-only` to inspect the currently available visual scope and `--vision none` for material that must never be sent to a visual provider.
 - `--vision-plan-only` does not govern SiliconFlow ASR. Use local Whisper or disable ASR when no source audio or transcript may leave the machine.
-- Legacy `doubao-responses` cloud-file deletion is best-effort; review reported cleanup errors. The OpenAI-compatible backends never hand the source file to a provider's own storage: Bailian receives either a public URL or an inline base64 payload, and the other two only ever see extracted frames. A local clip above the 10 MB inline limit is not uploaded anywhere; it falls back to local frame sampling.
+- Legacy `doubao-responses` cloud-file deletion is best-effort; review reported cleanup errors. The OpenAI-compatible backends never hand the source file to a provider's own storage: Bailian receives either a public URL or an inline base64 payload, and the other two only ever see extracted frames. When a local clip exceeds the inline limit this skill publishes it to its own OSS bucket as a `public-read` object under a random UUID name and deletes it right after the request; anyone holding that URL while the object exists can read it, so use `--vision none` for material that must never become publicly reachable.
 - Creator analysis may extract general methods, but should not clone a person's voice, face, copyrighted assets, or frame-by-frame creative expression without permission.
 
 ---
@@ -512,5 +512,10 @@ Do not infer completion from file presence alone. Check overall `status`, `asr.s
   - `SILICONFLOW_API_KEY`：云 ASR
   - `TOKENRHYTHM_API_KEY`：qwen3.8-flash 视觉兜底
   - 密钥只放环境变量，同时入 Memos 密码库留档，绝不写进本文件、代码或任何仓库。
+- **超大本地视频的公网托管（实测可用）**：本地视频超过 10 MB 时，`vision/temp_host.py` 用 STS 临时凭证把文件以对象级 `public-read` 上传到配置里指定的 OSS 桶（`tmp/video-downloader/<uuid>.mp4`），拿 `https://<bucket>.oss-<region>.aliyuncs.com/...` 直读链接交给百炼，请求结束立即 DELETE。
+  - 凭据文件按 `vision/temp_host.py` 的 `CONFIG_CANDIDATES` 顺序查找：`~/.axon/data/video-downloader/oss-temp-host.json` 或 `~/.config/kangarooking-skills/video-downloader/oss-temp-host.json`。不进本文件、不进代码、不进仓库。
+  - 实测边界：`AssumeRole` / `PutObject` / `DeleteObject` 全部通；`GetObject`（含预签名 URL）一律 `ImplicitDeny`，所以**只能靠对象级 `public-read` 读，签名 URL 那条路走不通**；没有 `public-read` 的对象匿名读必 403。
+  - 必须用三级域名 `<bucket>.oss-<region>.aliyuncs.com`；路径风格会 403 `SecondLevelDomainForbidden`，`-internal` 内网 endpoint 在本机不可达。
+  - 桶本身是私有的，公开窗口等于分析耗时；UUID 名字不可枚举，用完即删。
 - 微信视频号首次授权依赖 Playwright，本机未安装；走这条链路前先 `python -m pip install playwright`。
 - 中间产物统一落在 `~/.axon/data/` 下的持久目录，不放 `data/tmp`。

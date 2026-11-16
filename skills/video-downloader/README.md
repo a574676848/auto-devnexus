@@ -90,12 +90,42 @@ python3 scripts/download_video.py "https://v.douyin.com/..." \
 
 ## 大文件怎么进云端
 
-百炼 omni 接受原生 `video_url`，这个技能只送两种来源：
+百炼 omni 接受原生 `video_url`，但只有三种来源：
 
 1. 公网可直接访问的 HTTP(S) 链接（平台直链）——原样透传；
-2. 不超过 10 MB 的本地片段——内联为 `data:video/mp4;base64,...`。
+2. 不超过 10 MB 的本地片段——内联为 `data:video/mp4;base64,...`；
+3. 更大的本地片段——由 `scripts/vision/temp_host.py` 用 STS 临时凭证上传到自有 OSS 桶，对象级 `public-read`，拿直读 URL 交给模型，请求结束在 `finally` 里立即删除；上传不可用或失败时回退到本地抽帧。
 
-超过 10 MB 的本地片段不会被上传到任何第三方存储：该片段记一条 error，由 pipeline 自动回退到本地抽帧，分析照常完成，证据类型从 `native-video` 变成 `video-frame`。需要原生视频理解又超限时，自行把片段压到 10 MB 以内，或提供公网直链。
+第 3 条需要一份凭据文件，按 `temp_host.py` 里 `CONFIG_CANDIDATES` 的顺序查找：
+
+```text
+~/.axon/data/video-downloader/oss-temp-host.json
+~/.config/kangarooking-skills/video-downloader/oss-temp-host.json
+```
+
+格式：
+
+```json
+{
+  "accessKeyId": "<AK>",
+  "accessKeySecret": "<SK>",
+  "roleArn": "acs:ram::<account>:role/<role>",
+  "roleSessionName": "<session-name>",
+  "bucket": "<your-bucket>",
+  "region": "cn-beijing",
+  "stsEndpoint": "https://sts.cn-beijing.aliyuncs.com/",
+  "prefix": "tmp/video-downloader/",
+  "durationSeconds": 900
+}
+```
+
+凭据文件不属于 Skill 的一部分，不要提交进任何仓库。
+
+配置该能力时的三条硬约束：
+
+- 对象必须在上传时带上 `x-oss-object-acl: public-read`，否则私有桶匿名读一定 403；
+- 只能走三级域名 `<bucket>.oss-<region>.aliyuncs.com`，路径风格域名会返回 `SecondLevelDomainForbidden`；
+- 公开窗口等于单次分析耗时，对象名是随机 UUID、用完即删；敏感素材请直接用 `--vision none`。
 
 ## 输出
 
