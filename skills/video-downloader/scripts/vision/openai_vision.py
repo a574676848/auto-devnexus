@@ -26,7 +26,6 @@ from typing import Callable
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-from . import temp_host
 from .doubao import _data_url, _parse_notes, _parse_video_notes, _prompt, _string_list, _video_prompt
 
 
@@ -385,16 +384,13 @@ def analyze_video_native(
     for index, item in enumerate(video_items, start=1):
         label = str(item.get("id") or f"video-{index}")
         prefix = f"[{index}/{total}] {label}"
-        temp_key: str | None = None
         try:
-            url, temp_key = _video_input_url(item)
+            url = _video_input_url(item)
             if not url:
                 raise RuntimeError(
                     "No public video URL and the prepared file exceeds the inline limit; "
                     "falling back to frame sampling."
                 )
-            if progress and temp_key:
-                progress(f"{prefix}：已临时发布到公共只读地址（分析完立即删除）")
             if progress:
                 progress(f"{prefix}：原生视频理解（{resolved_model}）")
             text = _chat_text(
@@ -422,27 +418,25 @@ def analyze_video_native(
                 progress(f"{prefix}：原生视频解析完成，得到 {len(parsed)} 条视觉记录")
         except (RuntimeError, OSError, ValueError, TypeError) as exc:
             errors.append({"evidence_ids": [label], "error": str(exc)})
-        finally:
-            if temp_key:
-                temp_host.delete_public_object(temp_key)
     notes.sort(key=lambda note: (note["start_ms"], note.get("id") or ""))
     return notes, errors
 
 
-def _video_input_url(item: dict) -> tuple[str | None, str | None]:
-    """Return ``(url, temporary_object_key)`` for one prepared video item.
+def _video_input_url(item: dict) -> str | None:
+    """Return a ``video_url`` payload for one prepared video item, or ``None``.
 
-    ``temporary_object_key`` is set only when an oversized local file had to be
-    published as a public-read temporary object; the caller must delete it.
+    Only a caller-supplied HTTP(S) link and an inline base64 data URL for files
+    up to :data:`MAX_INLINE_VIDEO_BYTES` are supported. Larger local files are
+    reported as unusable so the caller falls back to frame sampling.
     """
     direct = str(item.get("public_url") or "").strip()
     if direct.startswith(("http://", "https://")):
-        return direct, None
+        return direct
     path = Path(str(item.get("path") or ""))
     if not path.is_file():
-        return None, None
+        return None
     if path.stat().st_size > MAX_INLINE_VIDEO_BYTES:
-        return temp_host.upload_for_public_url(path)
+        return None
     encoded = base64.b64encode(path.read_bytes()).decode("ascii")
     mime = "video/mp4" if path.suffix.lower() == ".mp4" else "video/quicktime"
-    return f"data:{mime};base64,{encoded}", None
+    return f"data:{mime};base64,{encoded}"
